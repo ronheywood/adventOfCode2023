@@ -1,4 +1,5 @@
-﻿namespace TestProject1.Helpers.Tests;
+﻿// ReSharper disable StringLiteralTypo
+namespace TestProject1.Helpers.Tests;
 
 public class RucksackTest
 {
@@ -7,7 +8,7 @@ public class RucksackTest
     {
         var contents = "a";
         var ex = Assert.Throws<Exception>(() => RuckSack.Inventory(contents));
-        Assert.That(ex.Message, Is.EqualTo("Uneven number of items"));
+        Assert.That(ex?.Message, Is.EqualTo("Uneven number of items"));
         
         Assert.DoesNotThrow(() => RuckSack.Inventory("aa"));
         
@@ -26,9 +27,9 @@ public class RucksackTest
         var ex3 = Assert.Throws<Exception>(() => RuckSack.Inventory(contents3));
         Assert.Multiple(() =>
         {
-            Assert.That(ex.Message, Is.EqualTo("Unexpected item code"));
-            Assert.That(ex2.Message, Is.EqualTo("Unexpected item code"));
-            Assert.That(ex3.Message, Is.EqualTo("Unexpected item code"));
+            Assert.That(ex?.Message, Is.EqualTo("Unexpected item code"));
+            Assert.That(ex2?.Message, Is.EqualTo("Unexpected item code"));
+            Assert.That(ex3?.Message, Is.EqualTo("Unexpected item code"));
         });
     }
 
@@ -63,20 +64,19 @@ public class RucksackTest
     }
     
     [Test]
-    public void FindThePriorityOfDuplicateItemsinARucksack()
+    public void FindThePriorityOfDuplicateItemsInARucksack()
     {
-        var input1 = "vJrwpWtwJgWrhcsFMMfFFhFp";
-        var epxecteDuplicateChar = 'p';
-        var epxectedValue = 16;
-        var sum = RuckSack.GetPriorty(input1);
-        Assert.That(sum, Is.EqualTo(epxectedValue));
+        const string contents = "vJrwpWtwJgWrhcsFMMfFFhFp";
+        var expected = RuckSack.Priority('p');
+        var sum = RuckSack.GetPriorty(contents);
+        Assert.That(sum, Is.EqualTo(expected));
     }
 
-    private static IEnumerable<object[]> DuplicateContents()
+    private static IEnumerable<object?[]> DuplicateContents()
     {
         yield return new object[] { new[] { 'A', 'b', 'c' }, new[] { 'A', 'b', 'c' }, 'A' };
         yield return new object[] { new[] { 'A', 'b', 'c' }, new[] { 'A', 'b', 'c' }, 'A' };
-        yield return new object[] { new[] { 'A', 'b', 'c' }, new[] { 'X', 'Y', 'Z' }, null };
+        yield return new object?[] { new[] { 'A', 'b', 'c' }, new[] { 'X', 'Y', 'Z' }, null };
         yield return new object[] { "vJrwpWtwJgWr".ToCharArray(), "hcsFMMfFFhFp".ToCharArray(), 'p' };
         yield return new object[] { "jqHRNqRjqzjGDLGL".ToCharArray(), "rsFMfFZSrLrFZsSL".ToCharArray(), 'L' };
         yield return new object[] { "PmmdzqPrV".ToCharArray(), "vPwwTWBwg".ToCharArray(), 'P' };
