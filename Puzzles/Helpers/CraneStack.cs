@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using NUnit.Framework.Constraints;
 
 namespace TestProject1.Helpers;
 
@@ -80,12 +79,12 @@ public class CraneStack
         MoveOneAtATime(instruction.MoveHowMany, to, from);
     }
 
-    private void MoveMany(int howMany, Stack to, Stack from)
+    private static void MoveMany(int howMany, Stack to, Stack from)
     {
         var stack = new List<object>();
         for (var i = howMany; i > 0; i--)
         {
-            stack.Add(from.Pop());
+            stack.Add(from.Pop() ?? string.Empty);
         }
 
         stack.Reverse();
