@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using NUnit.Framework.Constraints;
-
-namespace TestProject1.Helpers.Tests;
+﻿namespace TestProject1.Helpers.Tests;
 
 public class CampCleanupTests
 {

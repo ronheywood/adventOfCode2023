@@ -1,6 +1,4 @@
-﻿using NUnit.Framework.Constraints;
-
-namespace TestProject1.Helpers.Tests;
+﻿namespace TestProject1.Helpers.Tests;
 
 public class RucksackTest
 {
@@ -22,10 +20,10 @@ public class RucksackTest
         var ex = Assert.Throws<Exception>(() => RuckSack.Inventory(contents));
         
         var contents2 = "{{";
-        var ex2 = Assert.Throws<Exception>(() => RuckSack.Inventory(contents));
+        var ex2 = Assert.Throws<Exception>(() => RuckSack.Inventory(contents2));
         
         var contents3 = "[[";
-        var ex3 = Assert.Throws<Exception>(() => RuckSack.Inventory(contents));
+        var ex3 = Assert.Throws<Exception>(() => RuckSack.Inventory(contents3));
         Assert.Multiple(() =>
         {
             Assert.That(ex.Message, Is.EqualTo("Unexpected item code"));

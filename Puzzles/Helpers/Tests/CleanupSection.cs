@@ -1,6 +1,4 @@
-﻿using NUnit.Framework.Constraints;
-
-namespace TestProject1.Helpers.Tests;
+﻿namespace TestProject1.Helpers.Tests;
 
 public class CleanupSection
 {
@@ -25,14 +23,6 @@ public class CleanupSection
         return new Tuple<IEnumerable<int>, IEnumerable<int>>(section1, section2);
     }
 
-    public static bool Validate(int[] section1, int[] section2)
-    {   
-        var section1IsCoveredBySection2 = section1.All(section2.Contains);
-        var section2IsCoveredBySection1 = section2.All(section1.Contains);
-        
-        return !section1IsCoveredBySection2 && !section2IsCoveredBySection1;
-    }
-
     public static IEnumerable<Tuple<IEnumerable<int>,IEnumerable<int>>> Sections(IEnumerable<string> input)
     {
         var result = new List<Tuple<IEnumerable<int>,IEnumerable<int>>>();
@@ -51,6 +41,14 @@ public class CleanupSection
             result.Add( Sectors(section1,section2) );
         }   
         return result;
+    }
+
+    public static bool Validate(int[] section1, int[] section2)
+    {   
+        var section1IsCoveredBySection2 = section1.All(section2.Contains);
+        var section2IsCoveredBySection1 = section2.All(section1.Contains);
+        
+        return !section1IsCoveredBySection2 && !section2IsCoveredBySection1;
     }
 
     public static bool ValidateIsolated(int[] section1, int[] section2)

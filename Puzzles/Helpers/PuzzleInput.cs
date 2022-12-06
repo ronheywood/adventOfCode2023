@@ -31,4 +31,22 @@ public class PuzzleInput
             lines.Add(line);
         }
     }
+    
+    public static IEnumerable<string> InputStringToArray(string stackString)
+    {
+        Stream ms = new MemoryStream(Encoding.UTF8.GetBytes(stackString));
+        var stackReader =
+            new StreamReader(ms, Encoding.UTF8, true);
+        var lines = new List<string>();
+        while (true)
+        {
+            var line = stackReader.ReadLine();
+            if (line == null)
+            {
+                return lines;
+            }
+
+            lines.Add(line);
+        }
+    }
 }
