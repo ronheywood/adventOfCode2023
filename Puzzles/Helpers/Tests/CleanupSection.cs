@@ -1,4 +1,6 @@
-﻿namespace TestProject1.Helpers.Tests;
+﻿using NUnit.Framework.Constraints;
+
+namespace TestProject1.Helpers.Tests;
 
 public class CleanupSection
 {
@@ -49,5 +51,10 @@ public class CleanupSection
             result.Add( Sectors(section1,section2) );
         }   
         return result;
+    }
+
+    public static bool ValidateIsolated(int[] section1, int[] section2)
+    {
+        return !section1.Any(section2.Contains);
     }
 }
