@@ -24,10 +24,10 @@ public class Day7
         Assert.That(smallDirectories.Sum(d => c.DirectoryFileSize(d.Name)), Is.EqualTo(correctAnswer));
     }
 
-    [Test]
+    [TestCase(5025657)]
     //27760227 is too high
     //25725669 is also too high
-    public void Should_get_smallest_directory_to_delete()
+    public void Should_get_smallest_directory_to_delete(int correctAnswer)
     {
         
         var inputLines = PuzzleInput.GetFile("day7.txt");
@@ -36,6 +36,6 @@ public class Day7
         var targetDirectoriesToFreeSpace = c.GetDirectoryToDelete();
         
         var answer = c.DirectoryFileSize(targetDirectoriesToFreeSpace.First().Name);
-        Assert.That(answer, Is.EqualTo(0));
+        Assert.That(answer, Is.EqualTo(correctAnswer));
     }
 }

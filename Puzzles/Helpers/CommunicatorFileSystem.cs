@@ -9,6 +9,8 @@ public class CommunicatorFileSystemDirectory : ICommunicatorFileSystemItem
         Name = "";
     }
     public string Name { get; set; }
+
+    public int Size { get; set; }
 }
 
 public class CommunicatorFileSystemFile : ICommunicatorFileSystemItem
@@ -150,8 +152,11 @@ public class CommunicatorFileSystem
     public IEnumerable<CommunicatorFileSystemDirectory> GetDirectoryToDelete()
     {
         return _directories
-            .Where(d => DirectoryFileSize(d.Name) >= SpaceToFreeToApplyUpdate )
-            .OrderByDescending(d =>  DirectoryFileSize(d.Name));
+            .Select(d => { d.Size = DirectoryFileSize(d.Name);
+                return d;
+            })
+            .Where(d => d.Size >= SpaceToFreeToApplyUpdate )
+            .OrderBy(d => d.Size);
     }
 
     public int SpaceToFreeToApplyUpdate => 30000000 - FreeSpace;
