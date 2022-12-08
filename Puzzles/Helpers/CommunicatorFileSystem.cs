@@ -9,8 +9,6 @@ public class CommunicatorFileSystemDirectory : ICommunicatorFileSystemItem
         Name = "";
     }
     public string Name { get; set; }
-
-    public int Size { get; set; }
 }
 
 public class CommunicatorFileSystemFile : ICommunicatorFileSystemItem
@@ -46,6 +44,7 @@ public class ChangeDirectoryCommand : CommunicatorFileSystemCommand, ICommunicat
 
 public class CommunicatorFileSystem
 {
+    public readonly int TotalSpace = 70000000;
     private IList<string> _currentDirectoryStack;
     private readonly IList<CommunicatorFileSystemFile> _files;
     private readonly IList<CommunicatorFileSystemDirectory> _directories;
@@ -145,12 +144,22 @@ public class CommunicatorFileSystem
     {
         return _directories.Where(d => DirectoryFileSize(d.Name) <= maxFileSize);
     }
+
+    public int FreeSpace => TotalSpace - TotalFileSize;
+
+    public IEnumerable<CommunicatorFileSystemDirectory> GetDirectoryToDelete()
+    {
+        return _directories
+            .Where(d => DirectoryFileSize(d.Name) >= SpaceToFreeToApplyUpdate )
+            .OrderByDescending(d =>  DirectoryFileSize(d.Name));
+    }
+
+    public int SpaceToFreeToApplyUpdate => 30000000 - FreeSpace;
 }
 
 public interface ICommunicatorFileSystemItem
 {
     public string Name { get; set; }
-    public int Size { get; set; }
 }
 
 public enum InstructionType
