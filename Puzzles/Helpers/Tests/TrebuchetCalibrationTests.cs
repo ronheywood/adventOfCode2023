@@ -4,19 +4,6 @@ public class TrebuchetCalibrationTests
 {
     public class TrebuchetCalibrationShould
     {
-        // [TestCase("two1nine","219")]
-        // [TestCase("eightwothree","823")]
-        // [TestCase("abcone2threexyz","123")]
-        // [TestCase("xtwone3four","234")]
-        // [TestCase("zoneight234","18234")]
-        // [TestCase("7pqrstsixteen","76")]
-        // [TestCase("4nineeightseven2","42")]
-        // public void Should_convert_natural_language_numbers_to_numeric(string example, string expected)
-        // {
-        //     var actual = TrebuchetCalibration.ReplaceWords(example);
-        //     Assert.That(actual,Is.EqualTo(expected));
-        // }
-
         [TestCase("two1nine","2")]
         [TestCase("eightwothree","8")]
         [TestCase("abcone2threexyz","1")]

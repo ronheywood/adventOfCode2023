@@ -39,4 +39,30 @@ Line 3";
         IEnumerable expectedLineContent = new []{"Line 1","Line 2","Line 3"};
         CollectionAssert.AreEquivalent(expectedLineContent,actualLineContent);
     }
+
+    [Test]
+    public void Collate_puzzle_sections_into_smaller_groups()
+    {
+        var exampleInput = PuzzleInput.InputStringToArray(@"1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000");
+        var segments = PuzzleInput.GetPuzzleSegments(exampleInput, "").ToArray();
+        Assert.That(segments.Count,Is.EqualTo(5));
+        CollectionAssert.AreEquivalent(segments[0],new[] {"1000","2000","3000"});
+        CollectionAssert.AreEquivalent(segments[1],new[] {"4000"});
+        CollectionAssert.AreEquivalent(segments[2],new[] {"5000","6000"});
+        CollectionAssert.AreEquivalent(segments[3],new[] {"7000","8000","9000"});
+        CollectionAssert.AreEquivalent(segments[4],new[] {"10000"});
+    }
 }

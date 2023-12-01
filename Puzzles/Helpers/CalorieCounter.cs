@@ -4,32 +4,17 @@ public class CalorieCounter
 {
     public static IEnumerable<int> OrderedCalories(IEnumerable<string> input)
     {
-        //Each Elf separates their own inventory from the previous Elf's inventory (if any) by a blank line
-        //and we're using the blank last line as a stop point
-        var snacks = EnsureListHasEmptyLastElement(input);
-        var elves = new List<int>();
-        var elfSum = 0;
-        foreach (var snack in snacks)
+        //Each Elf separates their own inventory from the previous Elf's inventory
+        //(if any) by a blank line
+        var elves = PuzzleInput.GetPuzzleSegments(input,"").ToArray();
+        var calories = new List<int>();
+        foreach (var elf in elves)
         {
-            if (snack == string.Empty)
-            {
-                elves.Add(elfSum);
-                elfSum = 0;
-                continue;
-            }
-
-            elfSum += int.Parse(snack);
+            calories.Add(elf.Select(int.Parse).Sum());
         }
 
-        return elves.OrderByDescending(i => i);
+        return calories.OrderByDescending(i => i);
     }
 
     public static int MostCalories(IEnumerable<string> input) => OrderedCalories(input).First();
-
-    private static List<string> EnsureListHasEmptyLastElement(IEnumerable<string> input)
-    {
-        var enumerable = input.ToList();
-        enumerable.Add("");
-        return enumerable;
-    }
 }

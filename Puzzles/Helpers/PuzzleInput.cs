@@ -24,4 +24,29 @@ public static class PuzzleInput
     {
         return stackString.Split(Environment.NewLine);
     }
+
+    public static IEnumerable<IEnumerable<string>> GetPuzzleSegments(IEnumerable<string> puzzleInput,
+        string segmentDelimiter)
+    {
+        var puzzleInputList = puzzleInput.ToList();
+        puzzleInputList.Add(segmentDelimiter);
+        
+        IList<IEnumerable<string>> result = new List<IEnumerable<string>>();
+        List<string> segment = new();
+        foreach (var line in puzzleInputList)
+        {
+            if (line == segmentDelimiter)
+            {
+                if (segment.Any())
+                {
+                    result.Add(segment.ToArray());
+                    segment.Clear();
+                }
+                continue;
+            }
+            segment.Add(line);
+        }
+        
+        return result;
+    }
 }
