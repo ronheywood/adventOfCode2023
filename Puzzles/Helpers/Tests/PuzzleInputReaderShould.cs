@@ -65,4 +65,30 @@ Line 3";
         CollectionAssert.AreEquivalent(segments[3],new[] {"7000","8000","9000"});
         CollectionAssert.AreEquivalent(segments[4],new[] {"10000"});
     }
+
+    [Test]
+    public void Collate_puzzle_input_as_a_tuple_of_strings()
+    {
+        var exampleInput = PuzzleInput.InputStringToArray(@"A Y
+B X
+C Z");
+        var pairs = PuzzleInput.GetPuzzlePairs(exampleInput, " ").ToArray();
+        Assert.That(pairs.Count,Is.EqualTo(3));
+        Assert.That(pairs[0],Is.EqualTo(new Tuple<string,string>("A","Y")));
+        Assert.That(pairs[1],Is.EqualTo(new Tuple<string,string>("B","X")));
+        Assert.That(pairs[2],Is.EqualTo(new Tuple<string,string>("C","Z")));
+    }
+
+    [Test]
+    public void Collate_puzzle_input_as_a_tuple_of_strings_split_in_half()
+    {
+        var exampleInput = PuzzleInput.InputStringToArray(@"vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw");
+        var answer = PuzzleInput.GetPuzzleLinesSplit(exampleInput);
+        Assert.That(answer.Count(), Is.EqualTo(6));
+    }
 }

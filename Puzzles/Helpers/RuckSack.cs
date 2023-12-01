@@ -26,8 +26,8 @@ public class RuckSack
     public static int Priority(char c)
     {
         var iValue = (c-0);
-        if (iValue >= 97) return iValue - 96;
-        if (iValue >= 65) return iValue - 64 + 26;
+        if (char.IsLower(c)) return iValue - 96;
+        if (!char.IsLower(c)) return iValue - 64 + 26;
         
         throw new Exception("Unexpected item code");
     }

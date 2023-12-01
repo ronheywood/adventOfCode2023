@@ -49,4 +49,23 @@ public static class PuzzleInput
         
         return result;
     }
+
+    public static IEnumerable<Tuple<string,string>> GetPuzzlePairs(IEnumerable<string> input, string delimiter)
+    {
+        return input
+            .Select(line => line.Split(delimiter))
+            .Select(split => new Tuple<string, string>(split[0], split[1]))
+            .ToList();
+    }
+
+    public static IEnumerable<Tuple<string, string>> GetPuzzleLinesSplit(IEnumerable<string> puzzleInputLines)
+    {
+        return puzzleInputLines.Select(line =>
+        {
+            var charArray = line.ToCharArray();
+            var compartmentSize = charArray.Length/2;
+            return new Tuple<string, string>(charArray.Take(compartmentSize).ToString()!,
+                charArray.Skip(compartmentSize).Take(compartmentSize).ToString()!);
+        });
+    }
 }
