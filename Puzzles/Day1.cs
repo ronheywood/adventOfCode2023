@@ -76,7 +76,8 @@ treb7uchet""";
         {
             var day1PuzzleInput = PuzzleInput.GetFile("day1.txt");
             var calibration = TrebuchetCalibration.SumCalibration(day1PuzzleInput);
-            Assert.That(calibration, Is.EqualTo(54916));
+            //Assert.That(calibration, Is.EqualTo(54916)); part 1
+            Assert.That(calibration, Is.EqualTo(54728));
         }
     }
 }
