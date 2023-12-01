@@ -27,4 +27,16 @@ public class PuzzleInputReaderShould
         IEnumerable actualLineContent = PuzzleInput.GetFile("test");
         CollectionAssert.AreEquivalent(expectedLineContent,actualLineContent);
     }
+
+    [Test]
+    public void Convert_a_newline_separated_string_to_array()
+    {
+        string testString = @"Line 1
+Line 2
+Line 3";
+
+        IEnumerable actualLineContent = PuzzleInput.InputStringToArray(testString);
+        IEnumerable expectedLineContent = new []{"Line 1","Line 2","Line 3"};
+        CollectionAssert.AreEquivalent(expectedLineContent,actualLineContent);
+    }
 }

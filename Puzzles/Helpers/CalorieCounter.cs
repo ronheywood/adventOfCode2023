@@ -4,6 +4,8 @@ public class CalorieCounter
 {
     public static IEnumerable<int> OrderedCalories(IEnumerable<string> input)
     {
+        //Each Elf separates their own inventory from the previous Elf's inventory (if any) by a blank line
+        //and we're using the blank last line as a stop point
         var snacks = EnsureListHasEmptyLastElement(input);
         var elves = new List<int>();
         var elfSum = 0;

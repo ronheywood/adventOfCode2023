@@ -58,10 +58,10 @@ public class TrebuchetCalibrationTests
         [Test]
         public void Should_sum_many_values_from_example_puzzle_input()
         {
-            var examplePuzzleInput = @"""1abc2
+            var examplePuzzleInput = @"1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
-treb7uchet""";
+treb7uchet";
             var calibration = TrebuchetCalibration.SumCalibration(examplePuzzleInput.Split(Environment.NewLine));
             Assert.That(calibration, Is.EqualTo(142));
         }
