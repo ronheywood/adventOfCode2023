@@ -1,11 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework.Constraints;
-using TestProject1.Helpers;
+﻿namespace TestProject1.Helpers.Tests;
 
-namespace TestProject1;
-
-public class Day1
+public class TrebuchetCalibrationTests
 {
     public class TrebuchetCalibrationShould
     {
@@ -79,69 +74,5 @@ treb7uchet""";
             //Assert.That(calibration, Is.EqualTo(54916)); part 1
             Assert.That(calibration, Is.EqualTo(54728));
         }
-    }
-}
-
-public class TrebuchetCalibration
-{
-    private static Dictionary<string, string> _lookup = new Dictionary<string, string>()
-    {
-        { "one", "1" },
-        { "two", "2" },
-        { "three", "3" },
-        { "four", "4" },
-        { "five", "5" },
-        { "six", "6" },
-        { "seven", "7" },
-        { "eight", "8" },
-        { "nine", "9" }
-    };
-
-    public static string Calibrate(string input)
-    {
-        
-        return FirstWordOrNumber(input) + LastWordOrNumber(input);
-        
-    }
-
-    public static int SumCalibration(IEnumerable<string> lines)
-    {
-        var numbers = lines.Select(Calibrate).ToList();
-        if (numbers.Any(number => !int.TryParse(number,out _)))
-        {
-            throw new Exception($"A line has no numbers");
-        }
-        return numbers.Select(int.Parse).Sum();
-    }
-
-    public static string FirstWordOrNumber(string line)
-    {
-        if (line == string.Empty) return string.Empty;
-        var firstNumber = string.Empty;
-        if(_lookup.ContainsValue(line[0].ToString()))
-        {
-            return line[0].ToString();
-        }
-
-        foreach (var kvp in _lookup)
-        {
-            if (line.StartsWith(kvp.Key)) return kvp.Value;
-        }
-        return FirstWordOrNumber(line.Substring(1,line.Length-1));
-    }
-
-    public static string LastWordOrNumber(string line)
-    {
-        if (string.IsNullOrEmpty(line)) return string.Empty;
-        if(_lookup.ContainsValue(line[^1].ToString()))
-        {
-            return line[^1].ToString();
-        }
-
-        foreach (var kvp in _lookup)
-        {
-            if (line.EndsWith(kvp.Key)) return kvp.Value;
-        }
-        return LastWordOrNumber(line.Substring(0,line.Length-1));
     }
 }
