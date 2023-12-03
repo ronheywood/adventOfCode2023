@@ -117,7 +117,7 @@ class EngineSchematicGrid : PuzzleGrid
         return true;
     }
 
-    public IEnumerable FilterPartNumbers(List<Tuple<int,int,int>> numbers)
+    public IEnumerable<int> FilterPartNumbers(List<Tuple<int,int,int>> numbers)
     {
         var result = new List<int>();
         foreach (var numberTuple in numbers)

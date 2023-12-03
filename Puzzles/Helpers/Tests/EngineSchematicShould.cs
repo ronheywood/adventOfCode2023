@@ -64,8 +64,20 @@ public class EngineSchematicShould
         var puzzleGrid = new EngineSchematicGrid(puzzleLines);
         var number = puzzleGrid.FindNumbers();
 
-        var filteredNumbers = puzzleGrid.FilterPartNumbers(number);
+        var filteredNumbers = puzzleGrid.FilterPartNumbers(number).ToList();
         CollectionAssert.AreEqual(new[]{467,35,633,617,592,755,664,598},filteredNumbers);
+        Assert.That(filteredNumbers.Sum(),Is.EqualTo(4361));
+    }
+
+    [Test]
+    public void Should_sum_all_parts_from_puzzle_input()
+    {
+        var puzzleGrid = new EngineSchematicGrid(PuzzleInput.GetFile("day3.txt"));
+        var number = puzzleGrid.FindNumbers();
+
+        var filteredNumbers = puzzleGrid.FilterPartNumbers(number).ToList();
+        
+        Assert.That(filteredNumbers.Sum(),Is.EqualTo(537832));
     }
     
 }
