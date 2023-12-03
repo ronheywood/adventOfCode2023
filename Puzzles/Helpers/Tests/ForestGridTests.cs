@@ -9,10 +9,10 @@ public class ForestGridTests
         int expectedGridHeight)
     {
         var gridArray = PuzzleInput.InputStringToArray(grid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new IntPuzzleGrid(gridArray);
         Assert.Multiple(() =>
         {
-            Assert.That(forestGrid.Trees, Has.Count.EqualTo(expectedCount));
+            Assert.That(forestGrid.Items, Has.Count.EqualTo(expectedCount));
             Assert.That(forestGrid.GridWidth, Is.EqualTo(expectedGridWidth));
             Assert.That(forestGrid.GridHeight, Is.EqualTo(expectedGridHeight));
         });
@@ -26,7 +26,7 @@ public class ForestGridTests
     public void The_first_row_of_trees_is_visible_as_no_trees_are_between_it_and_the_top_edge_of_the_grid(int x, int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(x, y), Is.True);
     }
     
@@ -38,7 +38,7 @@ public class ForestGridTests
     public void The_first_column_of_trees_is_visible_as_no_trees_are_between_it_and_the_left_edge_of_the_grid(int x, int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(x, y), Is.True);
     }
 
@@ -51,7 +51,7 @@ public class ForestGridTests
         int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(x, y), Is.True);
     }
 
@@ -64,7 +64,7 @@ public class ForestGridTests
         int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(x, y), Is.True);
     }
 
@@ -72,7 +72,7 @@ public class ForestGridTests
     public void Tree_1x1_with_height_5_is_visible_from_left_and_top()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         
         Assert.That(forestGrid.IsTreeVisible(1, 1), Is.True);
     }
@@ -81,7 +81,7 @@ public class ForestGridTests
     public void Tree_1x2_with_height_5_is_visible_from_top_and_right()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(1, 2), Is.True);
     }
 
@@ -89,7 +89,7 @@ public class ForestGridTests
     public void Tree_1x3_with_height_1_is_not_visible_from_any_direction()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(1, 3), Is.False);
     }
     
@@ -97,7 +97,7 @@ public class ForestGridTests
     public void Tree_2x1_with_height_5_is_visible_from_the_east()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(2, 1), Is.True);
     }
     
@@ -105,7 +105,7 @@ public class ForestGridTests
     public void Tree_2x2_with_height_2_is_not_visible()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(2, 2), Is.False);
     }
     
@@ -113,7 +113,7 @@ public class ForestGridTests
     public void Tree_2x3_with_height_3_is_visible_from_the_east()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(2, 3), Is.True);
     }
     
@@ -121,7 +121,7 @@ public class ForestGridTests
     public void Tree_2x3_with_height_5_is_visible_from_the_west()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(2, 3), Is.True);
     }
     
@@ -129,7 +129,7 @@ public class ForestGridTests
     public void Tree_1x3_with_height_3_is_not_visible()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(1, 3), Is.False);
         
     }
@@ -138,7 +138,7 @@ public class ForestGridTests
     public void Tree_3x3_with_height_4_is_not_visible()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(3, 3), Is.False);
     }
 
@@ -146,7 +146,7 @@ public class ForestGridTests
     public void twenty_one_trees_are_visible_in_total()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.VisibleTrees().Count, Is.EqualTo(21));
     }
 
@@ -163,8 +163,8 @@ public class ForestGridTests
     public void Should_get_tree_by_grid_reference_starting_0_0(int x, int y, int expected)
     {
         var gridArray = PuzzleInput.InputStringToArray("01234\r\n56789");
-        var forestGrid = new ForestGrid(gridArray);
-        Assert.That(forestGrid.GetTree(x, y), Is.EqualTo(expected));
+        var forestGrid = new ForestPuzzleGrid(gridArray);
+        Assert.That(forestGrid.GetItem(x, y), Is.EqualTo(expected));
     }
 
     [TestCase(0, 2, 0)]
@@ -180,23 +180,23 @@ public class ForestGridTests
     public void Should_get_tree_by_grid_reference_starting_0_2(int x, int y, int expected)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n01234\r\n56789");
-        var forestGrid = new ForestGrid(gridArray);
-        Assert.That(forestGrid.GetTree(x, y), Is.EqualTo(expected));
+        var forestGrid = new ForestPuzzleGrid(gridArray);
+        Assert.That(forestGrid.GetItem(x, y), Is.EqualTo(expected));
     }
 
     [Test]
     public void Should_get_tree_south_east_corner()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n00000\r\n00000\r\n01234");
-        var forestGrid = new ForestGrid(gridArray);
-        Assert.That(forestGrid.GetTree(4, 4), Is.EqualTo(4));
+        var forestGrid = new ForestPuzzleGrid(gridArray);
+        Assert.That(forestGrid.GetItem(4, 4), Is.EqualTo(4));
     }
     
     [Test]
     public void Should_identify_if_a_tree_is_visible()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.IsTreeVisible(0,0), Is.True);
     }
 
@@ -210,7 +210,7 @@ public class ForestGridTests
     public void Should_identify_how_many_trees_in_each_direction_until_view_is_blocked_by_a_tree_same_height_or_higher(int x,int y,int viewingDistanceNorth,int viewingDistanceSouth, int viewingDistanceEast, int viewingDistanceWest)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.Multiple(() =>
         {
             Assert.That(forestGrid.ViewingDistanceNorth(x, y), Is.EqualTo(viewingDistanceNorth),"Viewing distance north was not matched");
@@ -224,7 +224,7 @@ public class ForestGridTests
     public void the_tree_that_blocks_view_is_included_in_the_count(int x,int y,int viewingDistance)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
         Assert.That(forestGrid.ViewingDistanceNorth(x,y), Is.EqualTo(viewingDistance));
     }
 
@@ -232,7 +232,7 @@ public class ForestGridTests
     public void Scenic_score_is_the_product_of_all_visible_trees_in_each_direction()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
 
         Assert.That(forestGrid.ScenicScore(2, 1), Is.EqualTo(4));
     }
@@ -241,7 +241,7 @@ public class ForestGridTests
     public void max_scenic_score()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
+        var forestGrid = new ForestPuzzleGrid(gridArray);
 
         Assert.That(forestGrid.MaxScenicScore(), Is.EqualTo(8));
     }
@@ -266,19 +266,19 @@ public class GridCompassTests
     public void Should_find_no_trees_north_of_row_1([Values(0, 1, 2, 3, 4)] int x)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n01234\r\n56789");
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
-        Assert.That(_gridCompass.TreesNorth(x, 0), Is.Empty);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
+        Assert.That(_gridCompass.North(x, 0), Is.Empty);
     }
 
     [Test]
     public void Should_find_1_trees_north_of_row_1([Values(0, 1, 2, 3, 4)] int x)
     {
         var gridArray = PuzzleInput.InputStringToArray("01234\r\n56789");
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { x }, _gridCompass.TreesNorth(x, 1));
+        CollectionAssert.AreEqual(new[] { x }, _gridCompass.North(x, 1));
     }
 
     [Test]
@@ -286,20 +286,20 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("12345\r\n01234\r\n00000");
         var expectedTree = x;
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.TreesNorth(x, 2));
+        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.North(x, 2));
     }
 
     [Test]
     public void Should_find_no_trees_south_of_row_4([Values(0, 1, 2, 3, 4)] int x)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
-        Assert.That(_gridCompass.TreesSouth(x, 4), Is.Empty);
+        Assert.That(_gridCompass.South(x, 4), Is.Empty);
     }
 
     [Test]
@@ -307,10 +307,10 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n01234");
         var expectedTree = x;
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.TreesSouth(x, 0));
+        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.South(x, 0));
     }
 
 
@@ -319,55 +319,55 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n01234\r\n12345");
         var expectedTree = x;
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.TreesSouth(x, 0));
+        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.South(x, 0));
     }
 
     [Test]
     public void Should_find_no_trees_west_of_column_0([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
-        Assert.That(_gridCompass.TreesWest(0, y), Is.Empty);
+        Assert.That(_gridCompass.West(0, y), Is.Empty);
     }
 
     [Test]
     public void Should_find_1_tree_west_of_column_1([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n10000\r\n20000\r\n30000\r\n40000");
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.TreesWest(1, y));
+        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.West(1, y));
     }
     [Test]
     public void Should_find_2_tree_west_of_column_2([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n11000\r\n22000\r\n33000\r\n44000");
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree }, _gridCompass.TreesWest(2, y));
+        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree }, _gridCompass.West(2, y));
     }
 
     [Test]
     public void Specification_grid_test()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
         Assert.Multiple(() =>
         {
-            CollectionAssert.AreEqual(new[] { 0, 3 }, _gridCompass.TreesWest(2, 0));
-            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.TreesNorth(2, 2));
-            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.TreesSouth(2, 2));
-            CollectionAssert.AreEqual(new[] { 3, 2 }, _gridCompass.TreesEast(2, 2));
+            CollectionAssert.AreEqual(new[] { 0, 3 }, _gridCompass.West(2, 0));
+            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.North(2, 2));
+            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.South(2, 2));
+            CollectionAssert.AreEqual(new[] { 3, 2 }, _gridCompass.East(2, 2));
         });
     }
 
@@ -376,10 +376,10 @@ public class GridCompassTests
     public void Should_find_no_trees_east_of_column_4([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
 
-        Assert.That(_gridCompass.TreesEast(4, y), Is.Empty);
+        Assert.That(_gridCompass.East(4, y), Is.Empty);
     }
     
     
@@ -387,21 +387,21 @@ public class GridCompassTests
     public void Should_find_one_tree_east_of_column_3([Values(0,1,2,3,4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00001\r\n00002\r\n00003\r\n00004");
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
         
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.TreesEast(3, y));
+        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.East(3, y));
     }
     
     [Test]
     public void Should_find_two_trees_east_of_column_2([Values(0,1,2,3,4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var forestGrid = new ForestGrid(gridArray);
-        _gridCompass = new GridCompass(forestGrid);
+        var forestGrid = new IntPuzzleGrid(gridArray);
+        _gridCompass = new ForestGridCompass(forestGrid);
         
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree,expectedTree }, _gridCompass.TreesEast(2, y));
+        CollectionAssert.AreEqual(new[] { expectedTree,expectedTree }, _gridCompass.East(2, y));
     }
 }

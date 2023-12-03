@@ -41,6 +41,12 @@ Line 3";
     }
 
     [Test]
+    public void Convert_puzzle_lines_to_multi_dimensional_array()
+    {
+        //var exampleInput = 
+    }
+
+    [Test]
     public void Collate_puzzle_sections_into_smaller_groups()
     {
         var exampleInput = PuzzleInput.InputStringToArray(@"1000
