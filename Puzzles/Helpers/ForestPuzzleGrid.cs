@@ -41,7 +41,7 @@ class ForestPuzzleGrid : IntPuzzleGrid
     {
         var treeHeight = GetItem(x, y);
 
-        var treesNorthOfMe = _gridCompass.North(x, y);
+        var treesNorthOfMe = GridCompass.AllItemsNorth(x, y);
 
         return (treesNorthOfMe.All(north => north < treeHeight));
     }
@@ -49,49 +49,49 @@ class ForestPuzzleGrid : IntPuzzleGrid
     private bool VisibleSouth(int x, int y)
     {
         var treeHeight = GetItem(x, y);
-        var treesSouthOfMe = _gridCompass.South(x, y);
+        var treesSouthOfMe = GridCompass.AllItemsSouth(x, y);
         return (treesSouthOfMe.All(south => south < treeHeight));
     }
 
     private bool VisibleEast(int x, int y)
     {
         var treeHeight = GetItem(x, y);
-        var treesEastOfMe = _gridCompass.East(x, y);
+        var treesEastOfMe = GridCompass.AllItemsEast(x, y);
         return (treesEastOfMe.All(east => east < treeHeight));
     }
 
     private bool VisibleWest(int x, int y)
     {
         var treeHeight = GetItem(x, y);
-        var treesWestOfMe = _gridCompass.West(x, y);
+        var treesWestOfMe = GridCompass.AllItemsWest(x, y);
         return (treesWestOfMe.All(west => west < treeHeight));
     }
 
     public int ViewingDistanceNorth(int x, int y)
     {
         var treeHeight = GetItem(x, y);
-        var treesInDirectionOfView = _gridCompass.North(x, y).ToArray();
+        var treesInDirectionOfView = GridCompass.AllItemsNorth(x, y).ToArray();
         return CountViewingDistance(treesInDirectionOfView, treeHeight);
     }
 
     public int ViewingDistanceSouth(int x, int y)
     {
         var treeHeight = GetItem(x, y);
-        var treesInDirectionOfView = _gridCompass.South(x, y).ToArray();
+        var treesInDirectionOfView = GridCompass.AllItemsSouth(x, y).ToArray();
         return CountViewingDistance(treesInDirectionOfView, treeHeight);
     }
 
     public int ViewingDistanceEast(int x, int y)
     {
         var treeHeight = GetItem(x, y);
-        var treesInDirectionOfView = _gridCompass.East(x, y).ToArray();
+        var treesInDirectionOfView = GridCompass.AllItemsEast(x, y).ToArray();
         return CountViewingDistance(treesInDirectionOfView, treeHeight);
     }
 
     public int ViewingDistanceWest(int x, int y)
     {
         var treeHeight = GetItem(x, y);
-        var treesInDirectionOfView = _gridCompass.West(x, y).ToArray();
+        var treesInDirectionOfView = GridCompass.AllItemsWest(x, y).ToArray();
         return CountViewingDistance(treesInDirectionOfView, treeHeight);
     }
 
@@ -100,10 +100,10 @@ class ForestPuzzleGrid : IntPuzzleGrid
         
         var treeHeight = GetItem(x, y);
         
-        var north = CountViewingDistance(_gridCompass.North(x, y).ToArray(), treeHeight);
-        var west = CountViewingDistance(_gridCompass.West(x, y).ToArray(), treeHeight);
-        var east = CountViewingDistance(_gridCompass.East(x, y).ToArray(), treeHeight);
-        var south = CountViewingDistance(_gridCompass.South(x, y).ToArray(), treeHeight);
+        var north = CountViewingDistance(GridCompass.AllItemsNorth(x, y).ToArray(), treeHeight);
+        var west = CountViewingDistance(GridCompass.AllItemsWest(x, y).ToArray(), treeHeight);
+        var east = CountViewingDistance(GridCompass.AllItemsEast(x, y).ToArray(), treeHeight);
+        var south = CountViewingDistance(GridCompass.AllItemsSouth(x, y).ToArray(), treeHeight);
 
         return north * west * east * south;
     }

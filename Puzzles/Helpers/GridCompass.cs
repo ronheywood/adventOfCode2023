@@ -1,4 +1,6 @@
-﻿namespace TestProject1.Helpers;
+﻿using NUnit.Framework.Constraints;
+
+namespace TestProject1.Helpers;
 
 public class GridCompass
 {
@@ -9,7 +11,7 @@ public class GridCompass
         _grid = grid;
     }
 
-    public IEnumerable<int> North(int x, int y)
+    public IEnumerable<int> AllItemsNorth(int x, int y)
     {
         if (y == 0) return Enumerable.Empty<int>();
 
@@ -23,7 +25,7 @@ public class GridCompass
         return result;
     }
 
-    public IEnumerable<int> South(int x, int y)
+    public IEnumerable<int> AllItemsSouth(int x, int y)
     {
         if (y >= _grid.GridHeight - 1)
             return Enumerable.Empty<int>();
@@ -36,7 +38,7 @@ public class GridCompass
         return result;
     }
 
-    public IEnumerable<int> West(int x, int y)
+    public IEnumerable<int> AllItemsWest(int x, int y)
     {
         if (x == 0) return Enumerable.Empty<int>();
         var result = new List<int>();
@@ -47,7 +49,7 @@ public class GridCompass
         return result;
     }
 
-    public IEnumerable<int> East(int x, int y)
+    public IEnumerable<int> AllItemsEast(int x, int y)
     {
         if (x == _grid.GridWidth - 1)
             return Enumerable.Empty<int>();
@@ -57,10 +59,66 @@ public class GridCompass
         return result;
     }
 
-    public int GetItem(int x, int y)
+    public int GetItemAsInteger(int x, int y)
+    {
+        var item = GetItem(x, y);
+        return int.TryParse(item, out var integer) ? integer : 0;
+    }
+
+    public string GetItem(int x, int y)
     {
         var column = y * _grid.GridWidth;
-        var rowStart =  _grid.Items.Skip(column);
-        return rowStart.Skip(x).First();
+        var rowStart = _grid.Items.Skip(column);
+        var item = rowStart.Skip(x).First();
+        return item;
+    }
+
+    public string? NorthWestNeighbor(int x, int y)
+    {
+        var allItems = AllItemsWest(x, y-1).ToArray();
+        return allItems.Any() ? allItems[0].ToString() : null;
+    }
+
+    public string? SouthWestNeighbor(int x, int y)
+    {
+        var allItems = AllItemsWest(x, y+1).ToArray();
+        return allItems.Any() ? allItems[0].ToString() : null;
+    }
+
+    public string? SouthEastNeighbor(int x, int y)
+    {
+        var allItems = AllItemsEast(x, y+1).ToArray();
+        return allItems.Any() ? allItems[0].ToString() : null;
+    }
+
+    public string? EastNeighbor(int x, int y)
+    {
+        var allItems = AllItemsEast(x, y).ToArray();
+        return allItems.Any() ? allItems[0].ToString() : null;
+    }
+
+    public string? WestNeighbor(int x, int y)
+    {
+        var allItems = AllItemsWest(x, y).ToArray();
+        return allItems.Any() ? allItems[0].ToString() : null;
+    }
+
+    public string? NorthEastNeighbor(int x, int y)
+    {
+        
+        var allItems = AllItemsEast(x, y-1).ToArray();
+        return allItems.Any() ? allItems[0].ToString() : null;
+    }
+
+    public string? NorthNeighbor(int x, int y)
+    {
+        var allItemsNorth = AllItemsNorth(x, y).ToArray();
+        return allItemsNorth.Any() ? allItemsNorth[0].ToString() : null;
+    }
+
+    public string? SouthNeighbor(int x, int y)
+    {
+        var allItemsSouth = AllItemsSouth(x, y).ToArray();
+        return allItemsSouth.Any() ? allItemsSouth[0].ToString() : null;
     }
 }
