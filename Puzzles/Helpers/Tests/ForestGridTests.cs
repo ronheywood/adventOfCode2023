@@ -9,7 +9,7 @@ public class ForestGridTests
         int expectedGridHeight)
     {
         var gridArray = PuzzleInput.InputStringToArray(grid);
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         Assert.Multiple(() =>
         {
             Assert.That(forestGrid.Items, Has.Count.EqualTo(expectedCount));
@@ -164,7 +164,7 @@ public class ForestGridTests
     {
         var gridArray = PuzzleInput.InputStringToArray("01234\r\n56789");
         var forestGrid = new ForestPuzzleGrid(gridArray);
-        Assert.That(forestGrid.GetItem(x, y), Is.EqualTo(expected));
+        Assert.That(forestGrid.GetItemAsInteger(x, y), Is.EqualTo(expected));
     }
 
     [TestCase(0, 2, 0)]
@@ -181,7 +181,7 @@ public class ForestGridTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n01234\r\n56789");
         var forestGrid = new ForestPuzzleGrid(gridArray);
-        Assert.That(forestGrid.GetItem(x, y), Is.EqualTo(expected));
+        Assert.That(forestGrid.GetItemAsInteger(x, y), Is.EqualTo(expected));
     }
 
     [Test]
@@ -189,7 +189,7 @@ public class ForestGridTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n00000\r\n00000\r\n01234");
         var forestGrid = new ForestPuzzleGrid(gridArray);
-        Assert.That(forestGrid.GetItem(4, 4), Is.EqualTo(4));
+        Assert.That(forestGrid.GetItemAsInteger(4, 4), Is.EqualTo(4));
     }
     
     [Test]
@@ -266,7 +266,7 @@ public class GridCompassTests
     public void Should_find_no_trees_north_of_row_1([Values(0, 1, 2, 3, 4)] int x)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n01234\r\n56789");
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
         Assert.That(_gridCompass.AllItemsNorth(x, 0), Is.Empty);
     }
@@ -275,7 +275,7 @@ public class GridCompassTests
     public void Should_find_1_trees_north_of_row_1([Values(0, 1, 2, 3, 4)] int x)
     {
         var gridArray = PuzzleInput.InputStringToArray("01234\r\n56789");
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { x }, _gridCompass.AllItemsNorth(x, 1));
@@ -286,7 +286,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("12345\r\n01234\r\n00000");
         var expectedTree = x;
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllItemsNorth(x, 2));
@@ -296,7 +296,7 @@ public class GridCompassTests
     public void Should_find_no_trees_south_of_row_4([Values(0, 1, 2, 3, 4)] int x)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         Assert.That(_gridCompass.AllItemsSouth(x, 4), Is.Empty);
@@ -307,7 +307,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n01234");
         var expectedTree = x;
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllItemsSouth(x, 0));
@@ -319,7 +319,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n01234\r\n12345");
         var expectedTree = x;
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllItemsSouth(x, 0));
@@ -329,7 +329,7 @@ public class GridCompassTests
     public void Should_find_no_trees_west_of_column_0([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         Assert.That(_gridCompass.AllItemsWest(0, y), Is.Empty);
@@ -339,7 +339,7 @@ public class GridCompassTests
     public void Should_find_1_tree_west_of_column_1([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n10000\r\n20000\r\n30000\r\n40000");
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         var expectedTree = y;
@@ -349,7 +349,7 @@ public class GridCompassTests
     public void Should_find_2_tree_west_of_column_2([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n11000\r\n22000\r\n33000\r\n44000");
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         var expectedTree = y;
@@ -360,7 +360,7 @@ public class GridCompassTests
     public void Specification_grid_test()
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
         Assert.Multiple(() =>
         {
@@ -376,7 +376,7 @@ public class GridCompassTests
     public void Should_find_no_trees_east_of_column_4([Values(0, 1, 2, 3, 4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
 
         Assert.That(_gridCompass.AllItemsEast(4, y), Is.Empty);
@@ -386,7 +386,7 @@ public class GridCompassTests
     public void Should_get_item_at_coordinates()
     {
         var gridArray = PuzzleInput.InputStringToArray("01234\r\n56789");
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
         Assert.That(_gridCompass.GetItem(0,0),Is.EqualTo("0"));
         Assert.That(_gridCompass.GetItem(1,0),Is.EqualTo("1"));
@@ -402,7 +402,7 @@ public class GridCompassTests
     public void Should_find_one_tree_east_of_column_3([Values(0,1,2,3,4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00001\r\n00002\r\n00003\r\n00004");
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
         
         var expectedTree = y;
@@ -413,7 +413,7 @@ public class GridCompassTests
     public void Should_find_two_trees_east_of_column_2([Values(0,1,2,3,4)] int y)
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var forestGrid = new IntPuzzleGrid(gridArray);
+        var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new ForestGridCompass(forestGrid);
         
         var expectedTree = y;
@@ -424,7 +424,7 @@ public class GridCompassTests
     public void Should_find_no_neighbor_north_west_of_column_0()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.NorthWestNeighbor(0, 0), Is.Null);
     }
@@ -433,7 +433,7 @@ public class GridCompassTests
     public void Should_find_neighbor_north()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.Multiple(() =>
         {
@@ -448,7 +448,7 @@ public class GridCompassTests
     public void Should_find_no_neighbor_north_of_row_0()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.NorthNeighbor(0, 0), Is.Null);
     }
@@ -457,7 +457,7 @@ public class GridCompassTests
     public void Should_find_no_neighbor_south_of_row_5()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.SouthNeighbor(4, 4), Is.Null);
     }
@@ -466,7 +466,7 @@ public class GridCompassTests
     public void Should_find_neighbor_south()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.Multiple(() =>
         {
@@ -480,7 +480,7 @@ public class GridCompassTests
     [Test]
     public void Should_find_no_items_south_west_of_column_0()
     { var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.SouthWestNeighbor(0, 0), Is.Null);
     }
@@ -489,7 +489,7 @@ public class GridCompassTests
     [Test]
     public void Should_find_no_items_west_of_column_0()
     { var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.WestNeighbor(0, 4), Is.Null);
     }
@@ -497,7 +497,7 @@ public class GridCompassTests
     [Test]
     public void Should_find_items_west_of_column_5()
     { var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.WestNeighbor(4, 4), Is.EqualTo("4"));
         Assert.That(_gridCompass.WestNeighbor(4, 3), Is.EqualTo("3"));
@@ -509,7 +509,7 @@ public class GridCompassTests
     public void Should_find_items_east_of_column_0()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.Multiple(() =>
         {
@@ -524,7 +524,7 @@ public class GridCompassTests
     [Test]
     public void Should_find_no_items_north_east_of_column_4()
     { var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.NorthEastNeighbor(4, 0), Is.Null);
     }
@@ -533,7 +533,7 @@ public class GridCompassTests
     public void Should_find_item_north_east_of_column_3()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.Multiple(() =>
         {
@@ -548,7 +548,7 @@ public class GridCompassTests
     public void Should_find_item_north_west_of_column_4()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.Multiple(() =>
         {
@@ -562,15 +562,17 @@ public class GridCompassTests
     [Test]
     public void Should_find_no_items_south_east_of_column_4()
     { var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.SouthEastNeighbor(4, 0), Is.Null);
+        Assert.That(_gridCompass.SouthEastNeighbor(4, 4), Is.Null);
+        Assert.That(_gridCompass.SouthEastNeighbor(0, 4), Is.Null);
     }
     
     [Test]
     public void Should_find_no_items_east_of_column_4()
     { var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.That(_gridCompass.EastNeighbor(4, 0), Is.Null);
     }
@@ -579,7 +581,7 @@ public class GridCompassTests
     public void Should_find_items_south_east_of_column_3()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.Multiple(() =>
         {
@@ -594,7 +596,7 @@ public class GridCompassTests
     public void Should_find_items_south_west_of_column_4()
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
-        var puzzleGrid = new IntPuzzleGrid(gridArray);
+        var puzzleGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(puzzleGrid);
         Assert.Multiple(() =>
         {

@@ -1,0 +1,48 @@
+﻿[
+  {
+    Item3: 467
+  },
+  {
+    Item1: 5,
+    Item3: 114
+  },
+  {
+    Item1: 2,
+    Item2: 2,
+    Item3: 35
+  },
+  {
+    Item1: 6,
+    Item2: 2,
+    Item3: 633
+  },
+  {
+    Item2: 4,
+    Item3: 617
+  },
+  {
+    Item1: 7,
+    Item2: 5,
+    Item3: 58
+  },
+  {
+    Item1: 2,
+    Item2: 6,
+    Item3: 592
+  },
+  {
+    Item1: 6,
+    Item2: 7,
+    Item3: 755
+  },
+  {
+    Item1: 1,
+    Item2: 9,
+    Item3: 664
+  },
+  {
+    Item1: 5,
+    Item2: 9,
+    Item3: 598
+  }
+]
