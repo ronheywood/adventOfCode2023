@@ -48,9 +48,9 @@ class EngineSchematicGrid : PuzzleGrid
     {
     }
 
-    public IEnumerable<Tuple<int,int>> FindParts()
+    public IEnumerable<Tuple<int,int,string>> FindParts()
     {
-        var result = new List<Tuple<int, int>>();
+        var result = new List<Tuple<int, int, string>>();
         for (var index = 0; index < GridRows.Count(); index++)
         { 
             var item = GridRows.Skip(index).First();
@@ -60,7 +60,7 @@ class EngineSchematicGrid : PuzzleGrid
             {
                 var character = charArray[x];
                 if (!CharIsSchematicCharacter(character)) continue;
-                result.Add(new Tuple<int, int>(x, index));
+                result.Add(new Tuple<int, int,string>(x, index,character.ToString()));
             }
         }
 
@@ -185,5 +185,71 @@ class EngineSchematicGrid : PuzzleGrid
         }
 
         return result;
+    }
+
+    public IEnumerable<int> FindGearRatios()
+    {
+        var result = new List<int>();
+        var gears = FindGearSymbols();
+        var numbers = FindNumbers();
+        foreach(var gear in gears)
+        {
+            var numbersAttachedToThisGear = NumbersAttachedToThisGear(numbers, gear).ToArray();
+
+            if (numbersAttachedToThisGear.Length == 2) 
+                result.Add(numbersAttachedToThisGear.Aggregate(1, (x,y) => x*y));
+        }
+    
+        return result;
+    }
+
+    public IEnumerable<int> NumbersAttachedToThisGear(List<Tuple<int, int, int>> numbers, Tuple<int, int, string> gear)
+    {
+        return numbers
+            .Where(number => NumberIsConnectedToGear(number, gear))
+            .Select(n => n.Item3).ToArray();
+    }
+
+    public IEnumerable<Tuple<int, int, string>> FindGearSymbols()
+    {
+        return FindParts().Where(part => part.Item3 == "*");
+    }
+
+    public bool NumberIsConnectedToGear(Tuple<int, int, int> number, Tuple<int, int, string> gear)
+    {
+        var (numberColumn, numberRow, numberInteger) = number;
+        var numberLength = numberInteger.ToString().Length;
+        var (gearColumn, gearRow, _) = gear;
+        
+        if (numberRow == gearRow)
+        {
+            if (numberColumn == gearColumn + 1) return true;
+            if (numberColumn + numberLength == gearColumn) return true;
+        }
+
+        if (numberColumn == gearColumn)
+        {
+            if (numberRow == gearRow - 1) return true;
+            if (numberRow == gearRow + 1) return true;
+        }
+
+        if (numberRow == gearRow - 1)
+        {
+            if (numberColumn + numberLength == gearColumn) return true; //ends north east
+            if (numberColumn + numberLength-1 == gearColumn) return true; //ends north
+            if (numberColumn == gearColumn + 1) return true; //starts north east
+            if (numberColumn == gearColumn -1) return true; //starts north west
+        }
+        
+        if (numberRow == gearRow + 1)
+        {
+            if (numberColumn + numberLength == gearColumn) return true;//ends south east
+            if (numberColumn + numberLength-1 == gearColumn) return true;//ends south
+            if (numberColumn == gearColumn + 1) return true;//starts south east
+            if (numberColumn == gearColumn - 1) return true;//starts south west
+            if (numberColumn == gearColumn) return true;
+        }
+
+        return false;
     }
 }

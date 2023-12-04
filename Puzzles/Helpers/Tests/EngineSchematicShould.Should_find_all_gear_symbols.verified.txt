@@ -5,24 +5,9 @@
     Item3: *
   },
   {
-    Item1: 6,
-    Item2: 3,
-    Item3: #
-  },
-  {
     Item1: 3,
     Item2: 4,
     Item3: *
-  },
-  {
-    Item1: 5,
-    Item2: 5,
-    Item3: +
-  },
-  {
-    Item1: 3,
-    Item2: 8,
-    Item3: $
   },
   {
     Item1: 5,
