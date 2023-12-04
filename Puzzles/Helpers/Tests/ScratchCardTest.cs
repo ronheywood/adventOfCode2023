@@ -120,4 +120,161 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
         }
         Assert.That(total,Is.EqualTo(27454));
     }
+
+    [Test]
+    public void Should_make_no_copies_of_cards_if_no_matches()
+    {
+        var puzzleInput = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var pairs = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToArray();
+        var cardWithNoMatches = pairs.Last();
+        Assert.That(ScratchCard.GetCopiedCards(pairs,cardWithNoMatches),Is.Empty);
+    }
+    
+    [Test]
+    public void Should_make_one_copy_of_cards_if_one_matches()
+    {
+        var puzzleInput = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var pairs = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToArray();
+        var cardWithOneMatch = pairs[3];
+        Assert.That(ScratchCard.GetCopiedCards(pairs,cardWithOneMatch),Is.Not.Empty);
+        Assert.That(ScratchCard.GetCopiedCards(pairs,cardWithOneMatch).Single(),Is.EqualTo(pairs[4]));
+    }
+
+    [Test]
+    public void Should_make_two_copies_of_cards_if_two_matches()
+    {
+        var puzzleInput = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var pairs = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToArray();
+        var cardWithTwoMatches = pairs[1];
+        var copiedCards = ScratchCard.GetCopiedCards(pairs,cardWithTwoMatches);
+        //Assert.That(copiedCards.Count(),Is.EqualTo(2));
+        CollectionAssert.AreEqual(new[]{pairs[2],pairs[3]},copiedCards);
+    }
+
+    [Test]
+    public void Should_make_four_copies_of_cards_if_four_matches()
+    {
+        var puzzleInput = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var pairs = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToArray();
+        var cardWithFourMatches = pairs[0];
+        var copiedCards = ScratchCard.GetCopiedCards(pairs,cardWithFourMatches);
+        CollectionAssert.AreEqual(new[]{pairs[1],pairs[2],pairs[3],pairs[4]},copiedCards);
+    }
+
+    [Test]
+    public void Should_make_no_extra_cards_when_all_cards_lose()
+    {
+        string input = @"Card 1: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 2: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 3: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 4: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 5: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 6: 41 48 83 86 17 |  1  2  3  4  5  6  7  8";
+        var puzzleInput = PuzzleInput.InputStringToArray(input);
+        var originalCards = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToArray();
+        var copiedCards = ScratchCard.PlayAllCards(originalCards);
+        CollectionAssert.AreEqual(originalCards,copiedCards);
+    }
+    
+    [Test]
+    [Ignore("Cards will never make you copy a card past the end of the table")]
+    public void Should_make_no_extra_cards_when_only_last_card_wins()
+    {
+        var input = @"Card 1: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 2: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 3: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 4: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 5: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 6: 41 48 83 86 17 |  41  2  3  4  5  6  7  8";
+        var puzzleInput = PuzzleInput.InputStringToArray(input);
+        var originalCards = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToArray();
+        var copiedCards = ScratchCard.PlayAllCards(originalCards);
+        CollectionAssert.AreEqual(originalCards,copiedCards);
+    }
+
+    [Test]
+    public async Task Should_add_a_copy_of_the_last_card_when_the_penultimate_card_wins()
+    {
+        var input = @"Card 1: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 2: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 3: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 4: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 5: 41 48 83 86 17 |  41  2  3  4  5  6  7  8
+Card 6: 41 48 83 86 17 |  1  2  3  4  5  6  7  8";
+        var puzzleInput = PuzzleInput.InputStringToArray(input);
+        var originalCards = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToList();
+        var expected = originalCards.ToArray().ToList();
+        expected.Add(originalCards.Last() );
+        
+        var copiedCards = ScratchCard.PlayAllCards(originalCards);
+        await Verify(copiedCards);
+        //CollectionAssert.AreEqual(expected,copiedCards);
+    }
+
+    [Test]
+    public async Task Should_make_recursive_copies()
+    {
+        var winRecursive = @"Card 1: 41 48 83 86 17 | 41 48  3  4  5  6  7  8
+Card 2: 41 48 83 86 17 | 41  2  3  4  5  6  7  8
+Card 3: 41 48 83 86 17 | 41  2  3  4  5  6  7  8
+Card 4: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 5: 41 48 83 86 17 |  1  2  3  4  5  6  7  8
+Card 6: 41 48 83 86 17 |  1  2  3  4  5  6  7  8";
+        //card one wins a copy of 2 and three, copy of 2 wins a copy of 3, copy of 3 wins a copy of 4 => adds Card 2, Card 3, Card 3, Card 4
+        //card two wins a copy of three, copy of 3 wins a copy of 4 => Adds Card 3, Card 4
+        //card three wins a copy of 4, copy of 4 wins nothing => Adds Card 4
+        //4 five six win nothing
+        var puzzleInput = PuzzleInput.InputStringToArray(winRecursive);
+        var originalCards = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToList();
+        var expected = originalCards.ToArray().ToList();
+        expected.Add(originalCards.Last() );
+        
+        var copiedCards = ScratchCard.PlayAllCards(originalCards);
+        Assert.That(copiedCards.Count(c => c.Item1 == "Card 1"),Is.EqualTo(1));
+        
+        Assert.That(copiedCards.Count(c => c.Item1 == "Card 2"),Is.EqualTo(2), "Card 1 wins a copy of card 2 and three");
+        
+        Assert.That(copiedCards.Count(c => c.Item1 == "Card 3"),Is.EqualTo(4), "Recursive");
+        //Assert.That(copiedCards.Count(c => c.Item1 == "Card 4"),Is.EqualTo(3), "Recursive");
+        
+        await Verify(copiedCards);
+    }
+
+    [Test]
+    public async Task Should_win_30_cards_from_input()
+    {
+        var puzzleInput = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var originalCards = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToList();
+        var expected = originalCards.ToArray().ToList();
+        expected.Add(originalCards.Last() );
+        
+        var copiedCards = ScratchCard.PlayAllCards(originalCards);
+        Assert.Multiple(() =>
+        {
+            Assert.That(copiedCards.Count(), Is.EqualTo(30));
+            Assert.That(copiedCards.Count(c => c.Item1 == "Card 1"), Is.EqualTo(1));
+            Assert.That(copiedCards.Count(c => c.Item1 == "Card 2"), Is.EqualTo(2));
+            Assert.That(copiedCards.Count(c => c.Item1 == "Card 3"), Is.EqualTo(4));
+            Assert.That(copiedCards.Count(c => c.Item1 == "Card 4"), Is.EqualTo(8));
+            Assert.That(copiedCards.Count(c => c.Item1 == "Card 5"), Is.EqualTo(14));
+            Assert.That(copiedCards.Count(c => c.Item1 == "Card 6"), Is.EqualTo(1));
+        });
+        await Verify(copiedCards);
+    }
+
+    [Test]
+    [Ignore("After lots of recursion (1m 13 seconds) - 5701343 is too low!")]
+    public void Should_win_how_many_cards_from_puzzle_input()
+    {   
+        var puzzleInput = PuzzleInput.GetFile("day4.txt");
+        var originalCards = PuzzleInput.GetPuzzlePairs(puzzleInput,":").ToList();
+        var expected = originalCards.ToArray().ToList();
+        expected.Add(originalCards.Last() );
+        
+        var copiedCards = ScratchCard.PlayAllCards(originalCards);
+        
+        Assert.That(copiedCards.Count(),Is.GreaterThan(5701343));
+        Assert.That(copiedCards.Count(),Is.EqualTo(6857330));
+        
+    }
 }
