@@ -267,7 +267,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n01234\r\n56789");
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
         Assert.That(_gridCompass.AllItemsNorth(x, 0), Is.Empty);
     }
 
@@ -276,7 +276,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("01234\r\n56789");
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { x }, _gridCompass.AllItemsNorth(x, 1));
     }
@@ -287,7 +287,7 @@ public class GridCompassTests
         var gridArray = PuzzleInput.InputStringToArray("12345\r\n01234\r\n00000");
         var expectedTree = x;
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllItemsNorth(x, 2));
     }
@@ -297,7 +297,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         Assert.That(_gridCompass.AllItemsSouth(x, 4), Is.Empty);
     }
@@ -308,7 +308,7 @@ public class GridCompassTests
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n01234");
         var expectedTree = x;
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllItemsSouth(x, 0));
     }
@@ -320,7 +320,7 @@ public class GridCompassTests
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n01234\r\n12345");
         var expectedTree = x;
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllItemsSouth(x, 0));
     }
@@ -330,7 +330,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         Assert.That(_gridCompass.AllItemsWest(0, y), Is.Empty);
     }
@@ -340,7 +340,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n10000\r\n20000\r\n30000\r\n40000");
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         var expectedTree = y;
         CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllItemsWest(1, y));
@@ -350,7 +350,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n11000\r\n22000\r\n33000\r\n44000");
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         var expectedTree = y;
         CollectionAssert.AreEqual(new[] { expectedTree, expectedTree }, _gridCompass.AllItemsWest(2, y));
@@ -361,7 +361,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
         Assert.Multiple(() =>
         {
             CollectionAssert.AreEqual(new[] { 0, 3 }, _gridCompass.AllItemsWest(2, 0));
@@ -377,7 +377,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray(SpecificationGrid);
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
 
         Assert.That(_gridCompass.AllItemsEast(4, y), Is.Empty);
     }
@@ -387,7 +387,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("01234\r\n56789");
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
         Assert.That(_gridCompass.GetItem(0,0),Is.EqualTo("0"));
         Assert.That(_gridCompass.GetItem(1,0),Is.EqualTo("1"));
         Assert.That(_gridCompass.GetItem(3,0),Is.EqualTo("3"));
@@ -403,7 +403,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00001\r\n00002\r\n00003\r\n00004");
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
         
         var expectedTree = y;
         CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllItemsEast(3, y));
@@ -414,7 +414,7 @@ public class GridCompassTests
     {
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00011\r\n00022\r\n00033\r\n00044");
         var forestGrid = new PuzzleGrid(gridArray);
-        _gridCompass = new ForestGridCompass(forestGrid);
+        _gridCompass = new GridCompass(forestGrid);
         
         var expectedTree = y;
         CollectionAssert.AreEqual(new[] { expectedTree,expectedTree }, _gridCompass.AllItemsEast(2, y));

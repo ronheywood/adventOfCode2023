@@ -1,13 +1,6 @@
 ﻿namespace TestProject1.Helpers;
 
-class ForestGridCompass : GridCompass
-{
-    public ForestGridCompass(PuzzleGrid grid) : base(grid)
-    {
-    }
-}
-
-class ForestPuzzleGrid : PuzzleGrid
+public class ForestPuzzleGrid : PuzzleGrid
 {
     public ForestPuzzleGrid(IEnumerable<string> grid) : base(grid)
     {

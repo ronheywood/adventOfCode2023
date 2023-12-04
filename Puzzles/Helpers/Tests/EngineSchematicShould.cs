@@ -112,10 +112,10 @@ public class EngineSchematicShould
         Assert.That( ratios.Sum(), Is.EqualTo(81939900));
     }
     
-    private const string aGearBetweenTwoNumbers = "1*2";
-    private const string aGearNotBetweenTwoNumbers = "3*.4";
-    [TestCase(aGearBetweenTwoNumbers,2)]
-    [TestCase(aGearNotBetweenTwoNumbers,0)]
+    private const string AGearBetweenTwoNumbers = "1*2";
+    private const string AGearNotBetweenTwoNumbers = "3*.4";
+    [TestCase(AGearBetweenTwoNumbers,2)]
+    [TestCase(AGearNotBetweenTwoNumbers,0)]
     public void Should_filter_gear_symbols_with_2_adjacent_integers(string input, int expected)
     {
         var puzzleLines = PuzzleInput.InputStringToArray(input);
