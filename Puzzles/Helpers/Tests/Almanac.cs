@@ -1,4 +1,6 @@
-﻿namespace TestProject1.Helpers.Tests;
+﻿using NUnit.Framework.Constraints;
+
+namespace TestProject1.Helpers.Tests;
 
 public class Almanac
 {
@@ -104,4 +106,59 @@ public class Almanac
         var almanacMap = map.FirstOrDefault(m => m.ForItem(seedNumber));
         return almanacMap?.Destination(seedNumber) ?? seedNumber;
     }
+
+    public long FirstLocationWithAValidSeed()
+    {
+        int i = 0;
+        while (i < MaxPossibleSeedLocation)
+        {
+            if (LocationHasSeed(i)) return i;
+            i++;
+        }
+
+        throw new Exception("No seed found");
+    }
+
+    public bool LocationHasSeed(long i)
+    {
+        var seedNumber = ChainOfMappingReversed(i);
+        if (Seeds.Any(s => s >= seedNumber && s <= seedNumber))
+        {
+            return true;
+        }
+
+        if (SeedRanges.Any(s => seedNumber >= s.Item1 && seedNumber <= s.Item2))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static long ReverseDestination(long input, IEnumerable<AlmanacMap> map)
+    {
+        var almanacMap = map.FirstOrDefault(m => m.ForDestination(input));
+        return almanacMap?.Source(input) ?? input;
+    }
+
+    public long ChainOfMappingReversed(long location)
+    {
+        var humidity = ReverseDestination(location, HumidityToLocationMap);
+        var temperature = ReverseDestination(humidity, TemperatureToHumidityMap);
+        var light = ReverseDestination(temperature, LightToTemperatureMap);
+        var water = ReverseDestination(light, WaterToLightMap);
+        var fertilizer = ReverseDestination(water, FertilizerToWaterMap);
+        var soil = ReverseDestination(fertilizer, SoilToFertilizerMap);
+        var seed = ReverseDestination(soil, SeedToSoilMap);
+        return seed;
+    }
+
+    public long NumberOfValidSeedLocations => HumidityToLocationMap.Select(m => m.Item3).Sum();
+    public IEnumerable<long> ValidSeedLocations()
+    {
+        return HumidityToLocationMap.SelectMany(m => m.ValidDestinations());
+    }
+
+    public long MinPossibleSeedLocation => HumidityToLocationMap.Select(m => m.Item1).Min();
+    public long MaxPossibleSeedLocation => HumidityToLocationMap.Select(m => m.Item1+m.Item3).Max();
 }

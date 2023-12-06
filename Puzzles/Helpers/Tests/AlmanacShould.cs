@@ -30,6 +30,55 @@ public class AlmanacShould
     }
 
     [Test]
+    public async Task The_original_example_would_look_like_this_as_ranges()
+    {
+        var almanac = new Almanac(PuzzleInput.InputStringToArray(@"seeds: 13 2 55 1 79 1"),true);
+        await Verify(almanac.SeedRanges);
+    }
+
+    [Test]
+    public void Original_example_but_with_ranges_should_give_location_35()
+    {
+        // var almanac = new Almanac(PuzzleInput.InputStringToArray(ExamplePuzzleInput));
+        // Assert.That(almanac.ChainOfMappingReversed(35), Is.EqualTo(13));
+        // Assert.That(almanac.FirstLocationWithAValidSeed(), Is.EqualTo(35));
+        //
+        var inputStringToArray = PuzzleInput.InputStringToArray(ExamplePuzzleInput).ToArray();
+        inputStringToArray[0] = "seeds: 13 2 55 1 79 1";
+        
+        var almanacRange = new Almanac(inputStringToArray,true);
+        Assert.That(almanacRange.ChainOfMappingReversed(35), Is.EqualTo(13));
+        Assert.That(almanacRange.FirstLocationWithAValidSeed(), Is.EqualTo(35));
+    }
+
+    [Test]
+    public void The_list_of_valid_locations_is_limited()
+    {
+        var almanac = new Almanac(PuzzleInput.InputStringToArray(ExamplePuzzleInput));
+        var bigAlmanac = new Almanac(PuzzleInput.GetFile("day5.txt"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(almanac.NumberOfValidSeedLocations, Is.EqualTo(41));
+            Assert.That(almanac.MinPossibleSeedLocation, Is.EqualTo(56));
+            Assert.That(almanac.MaxPossibleSeedLocation, Is.EqualTo(97));
+            Assert.That(bigAlmanac.NumberOfValidSeedLocations,Is.EqualTo(4178076444));
+        });
+    }
+
+    [Test]
+    public void we_can_skip_gaps_in_ranges()
+    {
+        var exampleLocations = @"seeds: 79 14 55 13
+humidity-to-location map:
+0 56 10
+50 93 10";
+        var almanac = new Almanac(PuzzleInput.InputStringToArray(exampleLocations));
+        Assert.That(almanac.HumidityToLocationMap.Count(), Is.EqualTo(2));
+        CollectionAssert.AreEqual(new long[]{0,1,2,3,4,5,6,7,8,9},almanac.HumidityToLocationMap.First().ValidDestinations());
+        CollectionAssert.AreEqual(new long[]{50,51,52,53,54,55,56,57,58,59},almanac.HumidityToLocationMap.Last().ValidDestinations());
+    }
+
+    [Test]
     public void Extract_seed_to_soil_map()
     {
         var almanac = new Almanac(PuzzleInput.InputStringToArray(ExamplePuzzleInput));
@@ -246,13 +295,86 @@ public class AlmanacShould
     }
     
     [Test]
-    [Ignore("WIP........")]
     public void Lowest_location_for_puzzle_input_with_a_range_of_seeds()
     {
-        var almanac = new Almanac(PuzzleInput.InputStringToArray(ExamplePuzzleInput), true);
-        //var almanac = new Almanac(PuzzleInput.GetFile("day5.txt"),true);
-        var location = almanac.Seeds.Select(seed => almanac.ChainOfMapping(seed)).Min();
+        var inputStringToArray = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var almanac = new Almanac(inputStringToArray, true);
+        var location = almanac.FirstLocationWithAValidSeed();
         Assert.That(location,Is.EqualTo(46));
+    }
+    
+    [Test]
+    [Ignore("Still Too slow, let's put some chaos into it")]
+    public void Lowest_location_for_big_puzzle_input_with_a_range_of_seeds()
+    {
+        var almanac = new Almanac(PuzzleInput.GetFile("day5.txt"), true);
+        var location = almanac.FirstLocationWithAValidSeed();
+        Assert.That(location,Is.EqualTo(46));
+    }
+
+    [Test]
+    [Ignore("I'm sure that 2008786 is the lowest location with a seed but it's apparently too high")]
+    public void Random_location_tests_to_find_a_better_range_of_locations()
+    {
+        var almanac = new Almanac(PuzzleInput.GetFile("day5.txt"), true);
+        var randomizer = new Random();
+        long lower = 2008786;
+        Assert.That(almanac.MinPossibleSeedLocation, Is.LessThan(2008786));
+        Assert.That(almanac.LocationHasSeed(lower),Is.True);
+        
+        //now work back from the lower
+        for (var i = 0; i <= 2008786; i++)
+        {
+            if(almanac.LocationHasSeed(i))
+                throw new Exception($"{i} is a valid location");
+        }
+        
+        Assert.That(lower,Is.LessThan(2008786));
+    }
+    
+    [Test]
+    [Ignore("This suggests that range 6 comes up with smaller locations")]
+    public void Guess_at_it([Range(0,9)] int testSet)
+    {
+        var almanac = new Almanac(PuzzleInput.GetFile("day5.txt"),true);
+
+        var ranges = almanac.SeedRanges.ToArray();
+        //await Verify(ranges);
+        
+        //find the range with the smallest gap
+        var range = ranges[testSet];
+
+        //A few random Picks from that range
+        List<long> testSeeds = new();
+        for (var i = 0; i < 1000; i++)
+        {
+            var random = new Random();
+            testSeeds.Add(random.NextInt64(range.Item1, range.Item2));
+        }
+        
+        var location = testSeeds.Select(seed => almanac.ChainOfMapping(seed)).Min();
+        Assert.That(location,Is.EqualTo(0));
+    }
+
+    [Test]
+    [Ignore("still slow")]
+    public void Looks_like_range_6()
+    {
+        
+        var almanac = new Almanac(PuzzleInput.GetFile("day5.txt"),true);
+
+        var ranges = almanac.SeedRanges.ToArray();
+        var range = ranges[6];
+        List<long> testSeeds = new();
+        
+        for (var i = range.Item1; i < range.Item2; i++)
+        {
+            testSeeds.Add(i);
+        }
+        
+        var location = testSeeds.Select(seed => almanac.ChainOfMapping(seed)).Min();
+        
+        Assert.That(location,Is.EqualTo(0));
     }
 
     private const string ExamplePuzzleInput = @"seeds: 79 14 55 13
@@ -304,6 +426,48 @@ public class AlmanacMapShould
             Assert.That(almanacMap.ForItem(97), Is.False);
             Assert.That(almanacMap.ForItem(0), Is.False);
             Assert.That(almanacMap.ForItem(-10), Is.False);
+        });
+    }
+
+    [Test]
+    public void Should_verify_if_a_destination_was_in_the_range()
+    {
+        var almanacMap = new AlmanacMap(60, 56, 37);
+        Assert.Multiple(() =>
+        {
+            Assert.That(almanacMap.ForDestination(59), Is.False);
+            Assert.That(almanacMap.ForDestination(60), Is.True);
+            Assert.That(almanacMap.ForDestination(61), Is.True);
+            Assert.That(almanacMap.ForDestination(97), Is.True);
+            Assert.That(almanacMap.ForDestination(98), Is.False);
+        });
+    }
+
+    [Test]
+    public void Provide_the_source_from_a_destination()
+    {
+        //Valid destinations for this map run from 60 up to 97
+        //And valid sources start from 56 to 93
+        var almanacMap = new AlmanacMap(60, 56, 37);
+        
+        //So Destination 60 must have been derived from source: 56 + (60 - 60) -> 56
+        //Destination 82 must have been derived from source 56 + (82 - 60)
+        //Which means source 56 + offset 22 is 78
+        Assert.Multiple(() =>
+        {
+            Assert.That(almanacMap.Source(60), Is.EqualTo(56));
+            Assert.That(almanacMap.Destination(56), Is.EqualTo(60));
+            
+            Assert.That(almanacMap.Source(61), Is.EqualTo(57));
+            Assert.That(almanacMap.Destination(57), Is.EqualTo(61));
+            
+            Assert.That(almanacMap.Source(82), Is.EqualTo(78));
+            Assert.That(almanacMap.Destination(78), Is.EqualTo(82));
+            
+            Assert.That(almanacMap.Source(93), Is.EqualTo(89));
+            Assert.That(almanacMap.Destination(89), Is.EqualTo(93));
+            
+            Assert.That(almanacMap.Source(98), Is.EqualTo(98));
         });
     }
 }

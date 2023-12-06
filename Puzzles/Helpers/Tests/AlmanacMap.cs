@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using NUnit.Framework.Constraints;
 
 namespace TestProject1.Helpers.Tests;
 
@@ -24,14 +25,27 @@ public class AlmanacMap : Tuple<long,long,long>
         return (item >= RangeStart && item <= RangeEnd);
     }
 
-    public IEnumerable<long> PossibleDestinations()
+    public bool ForDestination(long input)
     {
-        var result = new List<long>();
-        for (var i = 0; i < Item3; i++)
+        return input >= DestinationStart && input <= DestinationStart+Item3;
+    }
+
+    public long Source(long input)
+    {
+        if(ForDestination(input))
+            return RangeStart + (input - DestinationStart);
+        
+        return input;
+    }
+
+    public IEnumerable<long> ValidDestinations()
+    {
+        var list = new List<long>();
+        for (var i = DestinationStart; i < DestinationStart+Item3; i++)
         {
-            result.Add(DestinationStart+i);
+            list.Add(i);
         }
 
-        return result;
+        return list;
     }
 }
