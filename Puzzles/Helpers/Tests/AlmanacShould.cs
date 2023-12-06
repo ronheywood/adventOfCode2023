@@ -19,14 +19,14 @@ public class AlmanacShould
     public async Task Extract_range_of_seeds()
     {
         var almanac = new Almanac(PuzzleInput.InputStringToArray(ExamplePuzzleInput),true);
-        await Verify(almanac.Seeds);
+        await Verify(almanac.SeedRanges);
     }
     
     [Test]
     public async Task Extract_many_ranges_of_seeds()
     {
         var almanac = new Almanac(PuzzleInput.InputStringToArray(@"seeds: 1 2 3 2 4 2"),true);
-        await Verify(almanac.Seeds);
+        await Verify(almanac.SeedRanges);
     }
 
     [Test]
@@ -246,7 +246,7 @@ public class AlmanacShould
     }
     
     [Test]
-    //[Ignore("Slow........")]
+    [Ignore("WIP........")]
     public void Lowest_location_for_puzzle_input_with_a_range_of_seeds()
     {
         var almanac = new Almanac(PuzzleInput.InputStringToArray(ExamplePuzzleInput), true);

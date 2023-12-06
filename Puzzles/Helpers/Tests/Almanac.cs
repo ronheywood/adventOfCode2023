@@ -6,7 +6,15 @@ public class Almanac
     {
         var puzzleLines = puzzleInput as string[] ?? puzzleInput.ToArray();
 
-        Seeds = InitSeedsCollection(puzzleLines,useRangeOfSeeds);
+        if (useRangeOfSeeds)
+        {
+            Seeds = new List<uint>();
+            SeedRanges = InitSeedRanges(puzzleLines);
+        }
+        else {
+            Seeds = InitSeedsCollection(puzzleLines);
+            SeedRanges = Enumerable.Empty<Tuple<long, long>>();
+        }
         SeedToSoilMap = InitMap(puzzleLines, "seed-to-soil map:");
         SoilToFertilizerMap = InitMap(puzzleLines, "soil-to-fertilizer map:");
         FertilizerToWaterMap = InitMap(puzzleLines, "fertilizer-to-water map:");
@@ -14,6 +22,21 @@ public class Almanac
         LightToTemperatureMap = InitMap(puzzleLines, "light-to-temperature map:");
         TemperatureToHumidityMap = InitMap(puzzleLines, "temperature-to-humidity map:");
         HumidityToLocationMap = InitMap(puzzleLines, "humidity-to-location map:");
+    }
+
+    private IEnumerable<Tuple<long,long>> InitSeedRanges(string[] puzzleLines)
+    {
+        var result = new List<Tuple<long,long>>();
+        var seedsString = SeedsString(puzzleLines).Split(" ").ToArray();
+        for (var i = 0; i < seedsString.Length;i+=2)
+        {
+            var rangeSize = long.Parse(seedsString[i+1]);
+            var rangeStart = long.Parse(seedsString[i]);
+            var tuple = new Tuple<long, long>(rangeStart, rangeSize+rangeStart-1);
+            result.Add(tuple);
+        }
+
+        return result;
     }
 
     public long ChainOfMapping(long seed)
@@ -34,27 +57,17 @@ public class Almanac
         return MakeAlmanacMap(stringMap);
     }
 
-    private static IEnumerable<uint> InitSeedsCollection(IEnumerable<string> puzzleLines, bool useRangeOfSeeds)
+    private static IEnumerable<uint> InitSeedsCollection(IEnumerable<string> puzzleLines)
+    {
+        var seedsString = SeedsString(puzzleLines);
+        return seedsString.Split(" ").Where(s => !string.IsNullOrWhiteSpace(s)).Select(uint.Parse);
+    }
+
+    private static string SeedsString(IEnumerable<string> puzzleLines)
     {
         var seed = puzzleLines.First();
         var seedsString = seed.Split(':').Last().Trim();
-        var seedsNumbers = seedsString.Split(" ").Where(s => !string.IsNullOrWhiteSpace(s)).Select(uint.Parse);
-        if (!useRangeOfSeeds) return seedsNumbers;
-
-        var range = seedsNumbers.ToArray();
-        var seedNumbersFromRange = new List<uint>();
-        
-        for (var i=0; i<range.Length;i+=2)
-        {
-            var rangeStart = range[i];
-            var rangeEnd = rangeStart + range[i + 1];
-            for (var j = rangeStart; j < rangeEnd; j++)
-            {
-                seedNumbersFromRange.Add(j);
-            }
-        }
-
-        return seedNumbersFromRange.Any() ? seedNumbersFromRange.Distinct() : seedNumbersFromRange;
+        return seedsString;
     }
 
     private static IEnumerable<AlmanacMap> MakeAlmanacMap(IEnumerable<string> mapAsStringList)
@@ -83,6 +96,8 @@ public class Almanac
     public IEnumerable<AlmanacMap> HumidityToLocationMap { get; }
 
     public IEnumerable<AlmanacMap> TemperatureToHumidityMap { get; }
+
+    public IEnumerable<Tuple<long,long>> SeedRanges { get; }
 
     public static long Destination(long seedNumber, IEnumerable<AlmanacMap> map)
     {
