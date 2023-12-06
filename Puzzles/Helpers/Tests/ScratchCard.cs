@@ -61,7 +61,7 @@ public static class ScratchCard
         var allCards = cardDeck.ToList();
         var length = allCards.Count;
         if (length == 0) return allCards;
-        for(var i = 0;i<allCards.Count;i++)
+        for(var i = 0;i<length;i++)
         {
             if (i > 10000000) throw new Exception($"Over 10 million iterations - possible infinite recursion {length}");
             var card = allCards[i];
