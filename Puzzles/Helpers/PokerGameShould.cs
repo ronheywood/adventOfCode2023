@@ -1,4 +1,6 @@
-﻿namespace TestProject1.Helpers;
+﻿using NUnit.Framework.Constraints;
+
+namespace TestProject1.Helpers;
 
 public class PokerGameShould
 {
@@ -75,7 +77,7 @@ QQQJA 483";
     }
     
     [Test]
-    public void Should_order_cards_by_second_card_order_when_rank_is_high_card_and_first_card_macthes()
+    public void Should_order_cards_by_second_card_order_when_rank_is_high_card_and_first_card_matches()
     {
         var hands = new[] { new Tuple<string, string>(@"32T5K", "765"), new Tuple<string, string>(@"35T4K", "765"), };
         var result = PokerGame.RankHands(hands).ToArray();
@@ -136,6 +138,35 @@ QQQJA 483";
         });
     }
     
+    [TestCase("KKKKK","AAAAA",2)]
+    [TestCase("QQQQQ","22222",1)]
+    [TestCase("22222","QQQQQ",2)]
+    public void Should_order_five_of_a_kind_by_high_card(string hand1, string hand2,int winningHandIndex)
+    {
+        var hands = new[] { new Tuple<string, string>(hand1, "2"), new Tuple<string, string>(hand2, "1"), };
+        var result = PokerGame.RankHands(hands).ToArray();
+        var winningHand = hands[winningHandIndex - 1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.First().Hand, Is.EqualTo(winningHand.Item1));
+        });
+    }
+    
+    [TestCase("KKKKK","23459",1)]
+    [TestCase("KKKKK","A3459",1)]
+    // [TestCase("QQQQQ","22222",1)]
+    // [TestCase("22222","QQQQQ",2)]
+    public void Should_order_five_of_a_kind_over_lesser_hands(string hand1, string hand2,int winningHandIndex)
+    {
+        var hands = new[] { new Tuple<string, string>(hand1, "2"), new Tuple<string, string>(hand2, "1"), };
+        var result = PokerGame.RankHands(hands).ToArray();
+        var winningHand = hands[winningHandIndex - 1];
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.First().Hand, Is.EqualTo(winningHand.Item1));
+        });
+    }
+    
     [TestCase("J2345")]
     [TestCase("Q2345")]
     [TestCase("K2345")]
@@ -186,101 +217,6 @@ public static class PokerGame
         var handsArray = hands.ToArray(); 
         var numberOfHands = handsArray.Length;
         return handsArray.OrderBy(hand => hand, new PokerHandComparison()).Select((hand,index) => new PokerHand(hand,index,numberOfHands));
-    }
-}
-
-public class PokerHandComparisonShould
-{
-    [Test]
-    public void Identify_hands_with_a_pair()
-    {
-        var hand = new Tuple<string, string>("22345","");
-        Assert.That(PokerHandComparison.IsPair(hand),Is.True);
-    }
-
-    [Test]
-    public void Three_of_a_kind()
-    {
-        var hand = new Tuple<string, string>("22245","");
-        Assert.That(PokerHandComparison.IsPair(hand),Is.False);
-    }
-    
-    [Test]
-    public void Four_of_a_kind()
-    {
-        var hand = new Tuple<string, string>("22225","");
-        Assert.That(PokerHandComparison.IsPair(hand),Is.False);
-    }
-    
-    [Test]
-    public void Five_of_a_kind()
-    {
-        var hand = new Tuple<string, string>("22225","");
-        Assert.That(PokerHandComparison.IsPair(hand),Is.False);
-    }
-    
-    [Test]
-    public void Two_pair()
-    {
-        var hand = new Tuple<string, string>("22335","");
-        Assert.That(PokerHandComparison.IsPair(hand),Is.False);
-    }
-    
-    [TestCase("22333")]
-    public void Full_house(string fullHouse)
-    {
-        var hand = new Tuple<string, string>(fullHouse,"");
-        Assert.That(PokerHandComparison.IsPair(hand),Is.False);
-    }
-}
-
-public class PokerHandComparison : IComparer<Tuple<string, string>>
-{
-    private const int Hand2Wins = 1;
-    private const int Hand1Wins = -1;
-    
-    public int Compare(Tuple<string, string>? hand1, Tuple<string, string>? hand2)
-    {
-        if (hand1 is null) return Hand2Wins;
-        if (hand2 is null) return Hand1Wins;
-
-        if (IsPair(hand2)) return Hand2Wins;
-        //if (IsPair(hand1)) return Hand1Wins;
-        
-        //High Card
-        var hand1Array = hand1.Item1.ToCharArray();
-        var hand2Array = hand2.Item1.ToCharArray();
-        
-        var card1 = 0; var card2 = 0; var index = 0;
-        while (card1 == card2 && index < hand1Array.Length)
-        {
-            card1 = GetRank(hand1Array[index].ToString());
-            card2 = GetRank(hand2Array[index].ToString());
-            if (card1 > card2) return Hand1Wins;
-            if (card1 < card2) return Hand2Wins;
-            index++;
-        }
-
-        return 0;
-    }
-
-    public static bool IsPair(Tuple<string, string> hand1)
-    {
-        var cards = hand1.Item1.ToCharArray();
-        var distinctCards = cards.Distinct();
-        return distinctCards.Count() ==4;
-    }
-
-    private static int GetRank(string card)
-    {
-        Dictionary<string,int> suitedRank = new()
-        {
-            {"J" , 10},
-            {"Q" , 11},
-            {"K" , 12},
-            {"A" , 13}
-        };
-        return int.TryParse(card,out var numericRank) ? numericRank : suitedRank[card];
     }
 }
 
