@@ -61,14 +61,15 @@ public class BoatRaceTests
         var wins = chargeTimes.Where(t => t.Item2 > record);
         Assert.That(wins.Count(),Is.EqualTo(waysToWin));
     }
+    
     [TestCase(71530,940200,71503)]
     //[TestCase(55999793,401148522741405,71503)]//71503 is too low
     public void Ways_to_win_for_part_2(int time,long record,int waysToWin)
     {
         var boat = new Boat(){ Time = time };
-        var chargeTimes = boat.ChargeTimes().ToArray();
-        var wins = chargeTimes.Where(t => t.Item2 > record);
+        var chargeTimes = boat.ChargeTimes().ToArray(); //55999792
         
+        var wins = chargeTimes.Where(t => t.Item2 > record);
         Assert.That(wins.Count(),Is.EqualTo(waysToWin));
     }
 
