@@ -24,7 +24,7 @@ public class PokerHandComparison : IComparer<Tuple<string, string>>
         var hand1Strength = HandStrength(hand1);
         var hand2Strength = HandStrength(hand2);
         if (hand1Strength > hand2Strength) return Hand1Wins;
-        if (hand2Strength > hand1Strength) return Hand2Wins;;
+        if (hand2Strength > hand1Strength) return Hand2Wins;
         
         //Matching rank - highest first distinct card wins 
         var hand1Array = hand1.Item1.ToCharArray();
@@ -46,12 +46,18 @@ public class PokerHandComparison : IComparer<Tuple<string, string>>
     {
         Dictionary<string,int> suitedRank = new()
         {
-            {"J" , 10},
-            {"Q" , 11},
-            {"K" , 12},
-            {"A" , 13}
+            {"T" , 10},
+            {"J" , 11},
+            {"Q" , 12},
+            {"K" , 13},
+            {"A" , 14}
         };
-        return int.TryParse(card,out var numericRank) ? numericRank : suitedRank[card];
+        if (int.TryParse(card, out var numericRank))
+            return numericRank;
+        if(!suitedRank.ContainsKey(card)) 
+            throw new ($"Card {card} is not a face card or numeric");
+        
+        return suitedRank[card];
     }
 
     public static HandStrength HandStrength(Tuple<string, string> hand)

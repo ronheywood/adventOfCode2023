@@ -205,33 +205,27 @@ QQQJA 483";
         Assert.Multiple(() =>
         {
             Assert.That(result.First().Hand, Is.EqualTo("32245"));
+            Assert.That(result.First().Rank, Is.EqualTo(2));
             Assert.That(result.Last().Hand, Is.EqualTo("A2543"));
         });
     }
-}
 
-public static class PokerGame
-{
-    public static IEnumerable<PokerHand> RankHands(IEnumerable<Tuple<string, string>> hands)
+    [Test]
+    public void Should_rank_example_hand()
     {
-        var handsArray = hands.ToArray(); 
-        var numberOfHands = handsArray.Length;
-        return handsArray.OrderBy(hand => hand, new PokerHandComparison()).Select((hand,index) => new PokerHand(hand,index,numberOfHands));
+        var puzzleLines = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var pokerGame = PuzzleInput.GetPuzzlePairs(puzzleLines," ").ToArray();
+        var pokerHands = PokerGame.RankHands(pokerGame).ToArray();
+        CollectionAssert.AreEqual(new [] {5,4,3,2,1},pokerHands.Select(hand => hand.Rank));
+        Assert.That(pokerHands.Select(hand => hand.BidMultiple).Sum(),Is.EqualTo(6440));
     }
-}
 
-public record PokerHand
-{
-    public PokerHand(Tuple<string, string> hand, int index, int numberOfHands)
+    [Test]
+    public void Should_rank_puzzle_hand()
     {
-        Hand = hand.Item1;
-        Bid = hand.Item2;
-        Rank = numberOfHands - index;
-        BidMultiple = int.Parse(hand.Item2) * Rank;
+        var puzzleLines = PuzzleInput.GetFile("day7.txt");
+        var pokerGame = PuzzleInput.GetPuzzlePairs(puzzleLines," ").ToArray();
+        var pokerHands = PokerGame.RankHands(pokerGame).ToArray();
+        Assert.That(pokerHands.Select(hand => hand.BidMultiple).Sum(),Is.EqualTo(250602641));
     }
-    
-    public string Hand { get; init; }
-    public string Bid { get; init; }
-    public int Rank { get; init; }
-    public int BidMultiple { get; init; }
 }
