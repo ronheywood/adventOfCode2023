@@ -1,6 +1,4 @@
-﻿using NUnit.Framework.Constraints;
-
-namespace TestProject1.Helpers;
+﻿namespace TestProject1.Helpers.Tests;
 
 public class PokerGameShould
 {
@@ -227,5 +225,51 @@ QQQJA 483";
         var pokerGame = PuzzleInput.GetPuzzlePairs(puzzleLines," ").ToArray();
         var pokerHands = PokerGame.RankHands(pokerGame).ToArray();
         Assert.That(pokerHands.Select(hand => hand.BidMultiple).Sum(),Is.EqualTo(250602641));
+    }
+    
+    [Test]
+    public void Should_rank_example_hand_with_wildcards()
+    {
+        var puzzleLines = PuzzleInput.InputStringToArray(ExamplePuzzleInput);
+        var pokerGame = PuzzleInput.GetPuzzlePairs(puzzleLines," ").ToArray();
+        var pokerHands = PokerGame.RankHandsWithWildCards(pokerGame).ToArray();
+        Assert.That(pokerHands.Select(hand => hand.BidMultiple).Sum(),Is.EqualTo(5905));
+    }
+    
+    [Test]
+    [Ignore("250964151 is too low ...")]
+    public void Should_rank_puzzle_hand_with_wildcards()
+    {
+        var puzzleLines = PuzzleInput.GetFile("day7.txt");
+        var pokerGame = PuzzleInput.GetPuzzlePairs(puzzleLines," ").ToArray();
+        var pokerHands = PokerGame.RankHandsWithWildCards(pokerGame).ToArray();
+        Assert.That(pokerHands.Select(hand => hand.BidMultiple).Sum(),Is.EqualTo(5905));
+    }
+
+    [Test]
+    public void The_bids_are_unique_and_we_can_use_them_to_find_the_wildcard_hand_and_settle_a_tie()
+    {
+        var puzzleLines = PuzzleInput.GetFile("day7.txt");
+        var pokerGame = PuzzleInput.GetPuzzlePairs(puzzleLines," ").ToArray();
+        var allBids = pokerGame.Select(game => game.Item2).ToArray();
+        var distinctBids = pokerGame.Select(game => game.Item2).Distinct().ToArray();
+        Assert.That(allBids.Length, Is.EqualTo(distinctBids.Length));
+    }
+
+    [Test]
+    public void When_hands_match_ranks_should_rank_by_strongest_original_first_card()
+    {
+        var hand1 = "JKKK2";
+        var hand2 = "QQQQ2";
+        
+        var hands = new[] { new Tuple<string, string>(hand1, "2"), new Tuple<string, string>(hand2, "1"), };
+        var result = PokerGame.RankHandsWithWildCards(hands).ToArray();
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.First().Rank, Is.EqualTo(2));
+            Assert.That(result.First().Hand, Is.EqualTo(hand2));
+            Assert.That(result.Last().Hand, Is.EqualTo("KKKK2"));
+            Assert.That(result.Last().Rank, Is.EqualTo(1));
+        });
     }
 }

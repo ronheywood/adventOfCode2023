@@ -11,12 +11,72 @@ public enum HandStrength
     FourOfAKind = 5,
     FiveOfAKind = 6
 }
+
+public static class WildCardPoker
+{
+
+    public static Tuple<string,string> SelectWildCard(Tuple<string,string> hand)
+    {
+        var cardsArray = hand.Item1.ToCharArray();
+        if (cardsArray.All(c => c != 'J')) return hand;
+        //Jokers are Jacks for the purpose of a tie break 
+        if (cardsArray.All(c => c == 'J')) return hand;
+        
+        var strippedOfWildCards = hand.Item1.Replace("J", "");
+        var handStrengthWithWildCards = PokerHandComparison.HandStrength(hand.Item1);
+        var numberOfJokers = cardsArray.Count(c => c=='J');
+        var highestCardSymbol = strippedOfWildCards.MaxBy(c => PokerHandComparison.GetCardRank(c.ToString())).ToString();
+        
+        switch (handStrengthWithWildCards)
+        {
+            case HandStrength.Pair:
+            {
+                //to three of a kind
+                var maxBy = strippedOfWildCards.MaxBy(c => cardsArray.Count(card => card==c));
+                highestCardSymbol = maxBy.ToString();
+                break;
+            }
+            case HandStrength.TwoPair when numberOfJokers == 2:
+            {
+                //to 4 of a kind
+                var maxBy = strippedOfWildCards.MaxBy(c => cardsArray.Count(card => card==c));
+                highestCardSymbol = maxBy.ToString();
+                break;
+            }
+            case HandStrength.ThreeOfAKind when numberOfJokers == 1:
+            {
+                //to 4 of a kind
+                var maxBy = strippedOfWildCards.MaxBy(c => cardsArray.Count(card => card==c));
+                highestCardSymbol = maxBy.ToString();
+                break;
+            }
+        }
+
+        return new(hand.Item1.Replace("J", highestCardSymbol), hand.Item2);
+    }
+}
+
 public class PokerHandComparison : IComparer<Tuple<string, string>>
 {
+    private readonly IEnumerable<Tuple<string, string>> _originalHandsArray;
+
+    public PokerHandComparison(IEnumerable<Tuple<string, string>> originalHandsArray)
+    {
+        _originalHandsArray = originalHandsArray;
+    }
+    public static readonly Dictionary<string, int> SuitedRanks = new()
+    {
+        {"T" , 10},
+        {"J" , 11},
+        {"Q" , 12},
+        {"K" , 13},
+        {"A" , 14}
+    };
+
     private const int Hand2Wins = 1;
     private const int Hand1Wins = -1;
     
-    public int Compare(Tuple<string, string>? hand1, Tuple<string, string>? hand2)
+    public virtual int Compare(Tuple<string, string>? hand1, Tuple<string, string>? hand2)
     {
         if (hand1 is null) return Hand2Wins;
         if (hand2 is null) return Hand1Wins;
@@ -26,9 +86,11 @@ public class PokerHandComparison : IComparer<Tuple<string, string>>
         if (hand1Strength > hand2Strength) return Hand1Wins;
         if (hand2Strength > hand1Strength) return Hand2Wins;
         
-        //Matching rank - highest first distinct card wins 
-        var hand1Array = hand1.Item1.ToCharArray();
-        var hand2Array = hand2.Item1.ToCharArray();
+        //Matching rank - highest first distinct card wins
+        //But we need to compare the original hand value - not the wildcard
+        var hand1Array = _originalHandsArray.Single(hand => hand.Item2 == hand1.Item2).Item1.ToCharArray();
+        var hand2Array = _originalHandsArray.Single(hand => hand.Item2 == hand2.Item2).Item1.ToCharArray();
+        
         var card1 = 0; var card2 = 0; var index = 0;
         while (card1 == card2 && index < hand1Array.Length)
         {
@@ -39,30 +101,28 @@ public class PokerHandComparison : IComparer<Tuple<string, string>>
             index++;
         }
 
+        
         return 0;
     }
 
-    private static int GetCardRank(string card)
+    public static int GetCardRank(string card)
     {
-        Dictionary<string,int> suitedRank = new()
-        {
-            {"T" , 10},
-            {"J" , 11},
-            {"Q" , 12},
-            {"K" , 13},
-            {"A" , 14}
-        };
         if (int.TryParse(card, out var numericRank))
             return numericRank;
-        if(!suitedRank.ContainsKey(card)) 
+        if(!SuitedRanks.ContainsKey(card)) 
             throw new ($"Card {card} is not a face card or numeric");
         
-        return suitedRank[card];
+        return SuitedRanks[card];
     }
 
     public static HandStrength HandStrength(Tuple<string, string> hand)
     {
-        var charArray = hand.Item1.ToCharArray();
+        return HandStrength(hand.Item1);
+    }
+
+    public static HandStrength HandStrength(string hand)
+    {
+        var charArray = hand.ToCharArray();
         var distinct = charArray.Distinct().ToArray();
         return distinct.Length switch
         {

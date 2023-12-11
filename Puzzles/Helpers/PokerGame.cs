@@ -6,6 +6,15 @@ public static class PokerGame
     {
         var handsArray = hands.ToArray(); 
         var numberOfHands = handsArray.Length;
-        return handsArray.OrderBy(hand => hand, new PokerHandComparison()).Select((hand,index) => new PokerHand(hand,index,numberOfHands));
+        return handsArray.OrderBy(hand => hand, new PokerHandComparison(handsArray)).Select((hand,index) => new PokerHand(hand,index,numberOfHands));
+    }
+
+    public static IEnumerable<PokerHand> RankHandsWithWildCards(Tuple<string, string>[] hands)
+    {
+        var handsArray = hands.ToArray(); 
+        var numberOfHands = handsArray.Length;
+        return handsArray.Select(WildCardPoker.SelectWildCard)
+            .OrderBy(hand => hand, new PokerHandComparison(handsArray))
+            .Select((hand,index) => new PokerHand(hand,index,numberOfHands));
     }
 }
