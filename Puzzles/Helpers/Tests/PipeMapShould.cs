@@ -1,4 +1,6 @@
-﻿namespace TestProject1.Helpers.Tests;
+﻿using System.Collections;
+
+namespace TestProject1.Helpers.Tests;
 
 public class PipeMapShould
 {
@@ -6,26 +8,26 @@ public class PipeMapShould
     public void distance_is_zero_when_no_start_location()
     {
         var map = "";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(0));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
     }
 
     [Test]
     public void distance_is_zero_when_start_location_is_the_only_location()
     {
         var map = "S";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(0));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
     }
 
     [TestCaseSource(nameof(DisConnectedStartPipes))]
     public void distance_is_zero_when_start_location_is_not_connected_to_a_pipe(string map)
     {
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(0));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
     }
     
     [TestCaseSource(nameof(IncompatiblePipes))]
     public void distance_is_zero_when_start_location_is_not_connected_to_a_compatible_pipe(string map)
     {
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(0));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
     }
 
     [Test]
@@ -91,10 +93,10 @@ S" };
     public void distance_is_one_when_one_connected_horizontal_pipe()
     {
         var map = "S-";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
         
         map = "-S";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
     }
 
     [Test]
@@ -102,11 +104,11 @@ S" };
     {
         var map = @"|
 S";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
         
          map = @"S
 |";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
     }
 
     [Test]
@@ -114,7 +116,7 @@ S";
     {
         var map = @"S
 L";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
     }
 
     [Test]
@@ -122,21 +124,21 @@ L";
     {
         var map = @"S
 J";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
     }
 
     [Test]
     public void distance_is_one_when_one_connected_bend_pipe_east()
     {
         var map = @"S7";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
     }
     
     [Test]
     public void distance_is_one_when_one_connected_bend_pipe_se()
     {
         var map = @"FS";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
     }
     
     [TestCase("F")]
@@ -145,57 +147,82 @@ J";
     {
         var map = @$"{bendType}
 S";
-        Assert.That(new PipeMap(map).Distance, Is.EqualTo(1));
-    }
-}
-
-public class PipeMap
-{
-    private readonly string _map;
-    private readonly PipePuzzleGrid _grid;
-    private readonly GridCompass _gridCompass;
-
-    public PipeMap(string map)
-    {
-        _map = map;
-        _grid = new PipePuzzleGrid(PuzzleInput.InputStringToArray(map));
-        _gridCompass = new GridCompass(_grid);
+        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
     }
 
-    public string DistancePlot()
+    [TestCase("-","-")]
+    [TestCase("F","7")]
+    [TestCase("F","-")]
+    [TestCase("L","J")]
+    public void Identifies_valid_compass_orientations_horizontal_from_start(string west, string east)
     {
-        return _grid.DistancePlot();
-    }
-
-    public int Distance()
-    {
-        Tuple<int, int> start;
-        try
+        var map = @$"{west}S{east}";
+        var connectedToStart = new PipeMap(map).ConnectedToStart().ToArray();
+        
+        Assert.Multiple(() =>
         {
-            start = _grid.StartLocation();
-        }
-        catch
-        {
-            return 0;
-        }
+            Assert.That(connectedToStart, Has.Length.EqualTo(2));
+            Assert.That(connectedToStart, Does.Contain(GridDirections.East));
+            Assert.That(connectedToStart, Does.Contain(GridDirections.West));
+        });
+    }
 
-        //Straights
-        if (_gridCompass.WestNeighbor(start.Item1, start.Item2) == "-") return 1;
-        if (_gridCompass.EastNeighbor(start.Item1, start.Item2) == "-") return 1;
-        if (_gridCompass.NorthNeighbor(start.Item1, start.Item2) == "|") return 1;
-        if (_gridCompass.SouthNeighbor(start.Item1, start.Item2) == "|") return 1;
+    [TestCase("|","|")]
+    [TestCase("F","|")]
+    [TestCase("F","J")]
+    [TestCase("7","L")]
+    public void Identifies_valid_compass_orientations_vertical_from_start(string north, string south)
+    {
+        var map = @$".{north}.
+.S.
+.{south}.";
+        var connectedToStart = new PipeMap(map).ConnectedToStart().ToArray();
+        Assert.Multiple(() =>
+        {
+            Assert.That(connectedToStart, Does.Contain(GridDirections.North));
+            Assert.That(connectedToStart, Does.Contain(GridDirections.South));
+        });
+    }
+
+    [TestCase("-S-",GridDirections.West,GridDirections.East)]
+    [TestCase("-S-",GridDirections.East,GridDirections.West)]
+    [TestCase(@"|
+S
+|",GridDirections.North,GridDirections.South)][TestCase(@"|
+S
+|",GridDirections.South,GridDirections.North)]
+    public void identifies_valid_pipe_exit_from_entrance(string mapString, GridDirections entrance, GridDirections exit)
+    {
         
-        //Shoulders
-        if (_gridCompass.SouthNeighbor(start.Item1, start.Item2) == "L") return 1;
-        if (_gridCompass.SouthNeighbor(start.Item1, start.Item2) == "J") return 1;
-        
-        if (_gridCompass.NorthNeighbor(start.Item1, start.Item2) == "7") return 1;
-        if (_gridCompass.NorthNeighbor(start.Item1, start.Item2) == "F") return 1
-            ;
-        if (_gridCompass.EastNeighbor(start.Item1, start.Item2) == "7") return 1;
-        if (_gridCompass.WestNeighbor(start.Item1, start.Item2) == "F") return 1;
-        
-        return 0;
+        var map = new PipeMap(mapString);
+        var start = map.StartLocation();
+        Assert.That(map.Exit(start, entrance), Is.EqualTo(exit));
+    }
+
+    [TestCase("-",GridDirections.East,GridDirections.East)]
+    [TestCase("-",GridDirections.West,GridDirections.West)]
+    [TestCase("|",GridDirections.North,GridDirections.North)]
+    [TestCase("|",GridDirections.South,GridDirections.South)]
+    [TestCase("L",GridDirections.South,GridDirections.East)]
+    [TestCase("L",GridDirections.West,GridDirections.North)]
+    [TestCase("J",GridDirections.South,GridDirections.West)]
+    [TestCase("J",GridDirections.East,GridDirections.North)]
+    [TestCase("7",GridDirections.East,GridDirections.South)]
+    [TestCase("7",GridDirections.North,GridDirections.West)]
+    [TestCase("F",GridDirections.North,GridDirections.East)]
+    [TestCase("F",GridDirections.West,GridDirections.South)]
+    public void identifies_new_orientation_from_pipe_entrance(string pipeString, GridDirections entranceOrientation, GridDirections expectedOrientaion)
+    {
+        var orientation = PipeMap.Orientation(pipeString, entranceOrientation);
+        Assert.That(orientation,Is.EqualTo(expectedOrientaion));
+    }
+
+    [Test]
+    public void invalid_orientation_error_message()
+    {
+        var ex = Assert.Throws<Exception>(() => PipeMap.Orientation("-",GridDirections.North));
+        var expectedMessage = "Failed to get new orientation from input -, North";
+        Assert.That(ex?.Message,Is.EqualTo(expectedMessage));
     }
 }
 
