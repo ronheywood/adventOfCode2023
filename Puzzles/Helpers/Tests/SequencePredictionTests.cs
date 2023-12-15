@@ -109,51 +109,55 @@ public class SequencePredictionTests
     }
 }
 
-public static class SequencePrediction
+public class PredictPrecedingShould
 {
-    public static IEnumerable<long> Differences(IEnumerable<long> input)
-    { 
-        var inputArray = input.ToArray();
-        
-        var result = new List<long>();
-        for (var i = 1; i < inputArray.Length; i++)
-        {
-            var diff = inputArray[i] - inputArray[i-1];
-            result.Add(diff);
-        }
-
-        return result;
+    [TestCase("1 1 1 1 1 1", 1)]
+    [TestCase("5 5 5", 5)]
+    [TestCase("10 10 10", 10)]
+    public void Should_make_predictions_for_repeated_numbers(string sequence, long expectedPrediction)
+    {
+        var differences = SequencePrediction.Recurse(sequence);
+        var prediction = SequencePrediction.PredictionPrevious(differences);
+        Assert.That(prediction, Is.EqualTo(expectedPrediction));
+    }
+    
+    [TestCase("5 4 3 2 1", 6)]
+    [TestCase("0 -10 -20 -30", 10)]
+    public void Should_make_predictions_for_negative_sequences(string sequence, long expectedPrediction)
+    {
+        var differences = SequencePrediction.Recurse(sequence);
+        var prediction = SequencePrediction.PredictionPrevious(differences);
+        Assert.That(prediction, Is.EqualTo(expectedPrediction));
     }
 
-    public static IEnumerable<IEnumerable<long>> Recurse(string sequence)
+    [TestCase("0 3 6 9 12 15", -3)]
+    [TestCase("0 1 2 3 4 5", -1)]
+    [TestCase("1 3 6 10 15 21",0)]
+    [TestCase("10 13 16 21 30 45",5)]
+    
+    public void Should_make_predictions_for_larger_sequences(string sequence, long expectedPrediction)
     {
-        var result = new List<IEnumerable<long>>();
-        var sequenceNumbers = sequence.Split(" ").Select(long.Parse).ToArray();
-        return Recurse(sequenceNumbers, result);
+        var differences = SequencePrediction.Recurse(sequence);
+        var prediction = SequencePrediction.PredictionPrevious(differences);
+        Assert.That(prediction, Is.EqualTo(expectedPrediction));
+    }
+    
+    [Test]
+    public void Should_sum_predictions_for_many_sequences()
+    {
+        var example = @"0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45";
+        var sequences = PuzzleInput.InputStringToArray(example);
+        var sum = sequences.Select(SequencePrediction.Recurse).Select(SequencePrediction.PredictionPrevious).Sum();
+        Assert.That(sum, Is.EqualTo(2));
     }
 
-    private static IEnumerable<IEnumerable<long>> Recurse(IEnumerable<long> sequenceNumbers, ICollection<IEnumerable<long>> list)
+    [Test]
+    public void Should_sum_predictions_for_puzzle_input()
     {
-        var array = sequenceNumbers.ToArray();
-        
-        var differences = Differences(array).ToArray();
-        if (differences.All(i => i == 0))
-        {
-            //Return the original sequence if no differences
-            if(!list.Any()) list.Add(array);
-            return list;
-        }
-        
-        if(list.Count == 0) list.Add(array);
-        list.Add(differences);
-        return Recurse(differences,list);
-    }
-
-    public static long Prediction(IEnumerable<IEnumerable<long>> differences)
-    {
-        var arr = differences.ToArray();
-        if (arr.Length == 1) return arr.First().Last();
-        
-        return arr.First().Last() + Prediction(arr.Skip(1));
+        var sequences = PuzzleInput.GetFile("day9.txt");
+        var sum = sequences.Select(SequencePrediction.Recurse).Select(SequencePrediction.PredictionPrevious).Sum();
+        Assert.That(sum, Is.EqualTo(1066));
     }
 }
