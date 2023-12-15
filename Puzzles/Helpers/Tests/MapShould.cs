@@ -136,15 +136,15 @@ ZZZ = (ZZZ, ZZZ)
 ";
          var puzzleLines = PuzzleInput.InputStringToArray(puzzleInputStartingFromAnotherLocation).ToArray();
          var map = new Map(puzzleLines);
-         Assert.That(map.Location.Key,Is.EqualTo("AAA"));
-         Assert.That(map.Location.Key,Is.EqualTo("AAA"));
+         Assert.That(map.Location?.Key,Is.EqualTo("AAA"));
+         Assert.That(map.Location?.Key,Is.EqualTo("AAA"));
          
          using var mapEnumerator = map.GetEnumerator();
          Assert.That(mapEnumerator.Current,Is.Null);
          mapEnumerator.MoveNext();
-         Assert.That(map.Location.Key,Is.EqualTo("AAA"));
+         Assert.That(map.Location?.Key,Is.EqualTo("AAA"));
          mapEnumerator.MoveNext();
-         Assert.That(map.Location.Key,Is.EqualTo("NFX"));
+         Assert.That(map.Location?.Key,Is.EqualTo("NFX"));
          
          map = new Map(puzzleLines);
          CollectionAssert.AreEqual(new[]{"AAA","NFX","DBQ","ZZZ"},map.ToArray().Select(l => l.Key));
