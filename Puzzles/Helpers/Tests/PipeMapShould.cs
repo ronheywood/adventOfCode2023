@@ -4,6 +4,12 @@ namespace TestProject1.Helpers.Tests;
 
 public class PipeMapShould
 {
+    private const string SimpleLoopMap = @"-----
+|S-7.
+.|.|.
+.L-J.
+.....";
+
     [Test]
     public void distance_is_zero_when_no_start_location()
     {
@@ -39,12 +45,7 @@ public class PipeMapShould
     [Test]
     public async Task follows_connected_pipes_ignores_unconnected()
     {
-        var map = @"-----
-|S-7.
-.|.|.
-.L.J.
-.....";
-        var pipeMap = new PipeMap(map);
+        var pipeMap = new PipeMap(SimpleLoopMap);
         var distancePlot = pipeMap.DistancePlot();
         await Verify(distancePlot);
     }
@@ -224,6 +225,79 @@ S
         var expectedMessage = "Failed to get new orientation from input -, North";
         Assert.That(ex?.Message,Is.EqualTo(expectedMessage));
     }
+
+    [TestCaseSource(nameof(PipeRoute))]
+    public void Get_next_location_from_a_pipe_and_an_orientation(Tuple<int, int> start, GridDirections orientation, Tuple<int, int,GridDirections> expected)
+    {
+        var pipeMap = new PipeMap(SimpleLoopMap);
+        Assert.That(pipeMap.Next(start,orientation),Is.EqualTo(expected));
+    }
+
+    private static IEnumerable<object[]> PipeRoute()
+    {
+        yield return new object[]
+        {
+            new Tuple<int, int>(1, 1), 
+            GridDirections.East,
+            new Tuple<int, int, GridDirections>(2, 1, GridDirections.East)
+        };
+        
+        yield return new object[]
+        {
+            new Tuple<int, int>(2, 1), 
+            GridDirections.East,
+            new Tuple<int, int, GridDirections>(3, 1, GridDirections.East)
+        };
+        
+        yield return new object[]
+        {
+            new Tuple<int, int>(3, 1), 
+            GridDirections.East,
+            new Tuple<int, int, GridDirections>(3, 2, GridDirections.South)
+        };
+        yield return new object[]
+        {
+            new Tuple<int, int>(3, 2), 
+            GridDirections.South,
+            new Tuple<int, int, GridDirections>(3, 3, GridDirections.South)
+        };
+        yield return new object[]
+        {
+            new Tuple<int, int>(3, 3), 
+            GridDirections.South,
+            new Tuple<int, int, GridDirections>(2, 3, GridDirections.West)
+        };
+        yield return new object[]
+        {
+            new Tuple<int, int>(2, 3), 
+            GridDirections.West,
+            new Tuple<int, int, GridDirections>(1, 3, GridDirections.West)
+        };
+        yield return new object[]
+        {
+            new Tuple<int, int>(1, 3), 
+            GridDirections.West,
+            new Tuple<int, int, GridDirections>(1, 2, GridDirections.North)
+        };
+        yield return new object[]
+        {
+            new Tuple<int, int>(1, 2),
+            GridDirections.North,
+            new Tuple<int, int, GridDirections>(1, 1, GridDirections.North)
+        };
+    }
+
+    //     [Test]
+//     public void Follow_a_loop_to_start()
+//     {
+//         var pipe = @".....
+// .S-7.
+// .|.|.
+// .L-J.
+// ....."; 
+//         var map = new PipeMap(pipe);
+//         Assert.That(map.Route(), Is.EqualTo("S-7|J-L|"));
+//     }
 }
 
 public class PipePuzzleGrid : PuzzleGrid

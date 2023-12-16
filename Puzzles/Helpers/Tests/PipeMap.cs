@@ -56,7 +56,7 @@ public class PipeMap
         return ValidExits(_grid.StartLocation());
     }
 
-    public IEnumerable<GridDirections> ValidExits(Tuple<int, int> start)
+    private IEnumerable<GridDirections> ValidExits(Tuple<int, int> start)
     {
         var options = new List<GridDirections>();
         const string validNorth = "|7F";
@@ -101,5 +101,54 @@ public class PipeMap
             "F" when entranceOrientation == GridDirections.North => GridDirections.East,
             _ => throw new Exception($"Failed to get new orientation from input {pipeString}, {entranceOrientation}")
         };
+    }
+
+    public string Route()
+    {
+        var start = _grid.StartLocation();
+        var orientation = ValidExits(start).First();
+        string location = "";
+        // while (location != "S")
+        // {
+        //     location = nextLocation()
+        // }
+
+        return location;
+    }
+
+    public Tuple<int,int,GridDirections> Next(Tuple<int, int> location, GridDirections orientation)
+    {
+        var pipe = _gridCompass.GetItem(location.Item1,location.Item2) ?? "!";
+        
+        var exitOrientation = pipe == "S" ? ValidExits(location).First() 
+            : Orientation(pipe, orientation);
+
+        int nextX = location.Item1;
+        int nextY = location.Item2;
+        switch (exitOrientation)
+        {
+            case GridDirections.East:
+            {
+                nextX++;
+                break;
+            }
+            case GridDirections.South:
+            {
+                nextY++;
+                break;
+            }
+            case GridDirections.West:
+            {
+                nextX--;
+                break;
+            }
+            case GridDirections.North:
+            {
+                nextY--;
+                break;
+            }
+        }
+
+        return new Tuple<int, int, GridDirections>(nextX, nextY, exitOrientation);
     }
 }
