@@ -105,15 +105,21 @@ public class PipeMap
 
     public string Route()
     {
-        var start = _grid.StartLocation();
-        var orientation = ValidExits(start).First();
-        string location = "";
-        // while (location != "S")
-        // {
-        //     location = nextLocation()
-        // }
+        var location = _grid.StartLocation();
+        var orientation = ValidExits(location).First();
+        var journey = "S";
+        while (true)
+        {
+            var locationTuple = Next(location,orientation);
+            var pipe = _gridCompass.GetItem(locationTuple.Item1,locationTuple.Item2) ?? ".";
+            if (pipe == "S") break;
+            
+            location = new Tuple<int, int>(locationTuple.Item1, locationTuple.Item2);
+            orientation = locationTuple.Item3;
+            journey += pipe;
+        }
 
-        return location;
+        return journey;
     }
 
     public Tuple<int,int,GridDirections> Next(Tuple<int, int> location, GridDirections orientation)
@@ -123,8 +129,8 @@ public class PipeMap
         var exitOrientation = pipe == "S" ? ValidExits(location).First() 
             : Orientation(pipe, orientation);
 
-        int nextX = location.Item1;
-        int nextY = location.Item2;
+        var nextX = location.Item1;
+        var nextY = location.Item2;
         switch (exitOrientation)
         {
             case GridDirections.East:
@@ -147,6 +153,8 @@ public class PipeMap
                 nextY--;
                 break;
             }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         return new Tuple<int, int, GridDirections>(nextX, nextY, exitOrientation);

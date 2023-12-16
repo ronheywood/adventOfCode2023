@@ -287,17 +287,12 @@ S
         };
     }
 
-    //     [Test]
-//     public void Follow_a_loop_to_start()
-//     {
-//         var pipe = @".....
-// .S-7.
-// .|.|.
-// .L-J.
-// ....."; 
-//         var map = new PipeMap(pipe);
-//         Assert.That(map.Route(), Is.EqualTo("S-7|J-L|"));
-//     }
+        [Test]
+    public void Follow_a_loop_to_start()
+    {
+        var map = new PipeMap(SimpleLoopMap);
+        Assert.That(map.Route(), Is.EqualTo("S-7|J-L|"));
+    }
 }
 
 public class PipePuzzleGrid : PuzzleGrid
