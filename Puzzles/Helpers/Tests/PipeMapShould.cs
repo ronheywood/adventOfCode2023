@@ -14,26 +14,26 @@ public class PipeMapShould
     public void distance_is_zero_when_no_start_location()
     {
         var map = "";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(0));
     }
 
     [Test]
     public void distance_is_zero_when_start_location_is_the_only_location()
     {
         var map = "S";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(0));
     }
 
     [TestCaseSource(nameof(DisConnectedStartPipes))]
     public void distance_is_zero_when_start_location_is_not_connected_to_a_pipe(string map)
     {
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(0));
     }
     
     [TestCaseSource(nameof(IncompatiblePipes))]
     public void distance_is_zero_when_start_location_is_not_connected_to_a_compatible_pipe(string map)
     {
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(0));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(0));
     }
 
     [Test]
@@ -45,7 +45,7 @@ public class PipeMapShould
     [Test]
     public async Task follows_connected_pipes_ignores_unconnected()
     {
-        var pipeMap = new PipeMap(SimpleLoopMap);
+        var pipeMap = new PipeMap(PuzzleInput.InputStringToArray(SimpleLoopMap));
         var distancePlot = pipeMap.DistancePlot();
         await Verify(distancePlot);
     }
@@ -94,10 +94,10 @@ S" };
     public void distance_is_one_when_one_connected_horizontal_pipe()
     {
         var map = "S-";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
         
         map = "-S";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
 
     [Test]
@@ -105,11 +105,11 @@ S" };
     {
         var map = @"|
 S";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
         
          map = @"S
 |";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
 
     [Test]
@@ -117,7 +117,7 @@ S";
     {
         var map = @"S
 L";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
 
     [Test]
@@ -125,21 +125,21 @@ L";
     {
         var map = @"S
 J";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
 
     [Test]
     public void distance_is_one_when_one_connected_bend_pipe_east()
     {
         var map = @"S7";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
     
     [Test]
     public void distance_is_one_when_one_connected_bend_pipe_se()
     {
         var map = @"FS";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
     
     [TestCase("F")]
@@ -148,7 +148,7 @@ J";
     {
         var map = @$"{bendType}
 S";
-        Assert.That(new PipeMap(map).Distance(), Is.EqualTo(1));
+        Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
 
     [TestCase("-","-")]
@@ -158,7 +158,7 @@ S";
     public void Identifies_valid_compass_orientations_horizontal_from_start(string west, string east)
     {
         var map = @$"{west}S{east}";
-        var connectedToStart = new PipeMap(map).ConnectedToStart().ToArray();
+        var connectedToStart = new PipeMap(PuzzleInput.InputStringToArray(map)).ConnectedToStart().ToArray();
         
         Assert.Multiple(() =>
         {
@@ -177,7 +177,7 @@ S";
         var map = @$".{north}.
 .S.
 .{south}.";
-        var connectedToStart = new PipeMap(map).ConnectedToStart().ToArray();
+        var connectedToStart = new PipeMap(PuzzleInput.InputStringToArray(map)).ConnectedToStart().ToArray();
         Assert.Multiple(() =>
         {
             Assert.That(connectedToStart, Does.Contain(GridDirections.North));
@@ -195,7 +195,7 @@ S
     public void identifies_valid_pipe_exit_from_entrance(string mapString, GridDirections entrance, GridDirections exit)
     {
         
-        var map = new PipeMap(mapString);
+        var map = new PipeMap(PuzzleInput.InputStringToArray(mapString));
         var start = map.StartLocation();
         Assert.That(map.Exit(start, entrance), Is.EqualTo(exit));
     }
@@ -229,7 +229,7 @@ S
     [TestCaseSource(nameof(PipeRoute))]
     public void Get_next_location_from_a_pipe_and_an_orientation(Tuple<int, int> start, GridDirections orientation, Tuple<int, int,GridDirections> expected)
     {
-        var pipeMap = new PipeMap(SimpleLoopMap);
+        var pipeMap = new PipeMap(PuzzleInput.InputStringToArray(SimpleLoopMap));
         Assert.That(pipeMap.Next(start,orientation),Is.EqualTo(expected));
     }
 
@@ -290,8 +290,16 @@ S
         [Test]
     public void Follow_a_loop_to_start()
     {
-        var map = new PipeMap(SimpleLoopMap);
+        var map = new PipeMap(PuzzleInput.InputStringToArray(SimpleLoopMap));
         Assert.That(map.Route(), Is.EqualTo("S-7|J-L|"));
+    }
+    
+    [Test]
+    public void Follow_a_loop_in_example_puzzle()
+    {
+        var exampleMap = PuzzleInput.GetFile("day10.txt");
+        var map = new PipeMap(exampleMap);
+        Assert.That(map.Route(), Does.StartWith("S-J7LF---JF--7J-F")); //... 13780 chars
     }
 }
 

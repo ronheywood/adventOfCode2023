@@ -2,14 +2,12 @@
 
 public class PipeMap
 {
-    private readonly string _map;
     private readonly PipePuzzleGrid _grid;
     private readonly GridCompass _gridCompass;
 
-    public PipeMap(string map)
+    public PipeMap(IEnumerable<string> mapLines)
     {
-        _map = map;
-        _grid = new PipePuzzleGrid(PuzzleInput.InputStringToArray(map));
+        _grid = new PipePuzzleGrid(mapLines);
         _gridCompass = new GridCompass(_grid);
     }
 
