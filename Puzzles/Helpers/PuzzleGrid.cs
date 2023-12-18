@@ -29,8 +29,10 @@ public class PuzzleGrid
 
     public int GridHeight { get; private set; }
 
+    public string? GetItem(int x, int y) => GridCompass.GetItem(x, y);
+    
     public int GetItemAsInteger(int x, int y)
     {
-        return int.TryParse(GridCompass.GetItem(x, y),out var asInt) ? asInt : 0;
+        return int.TryParse(GetItem(x, y),out var asInt) ? asInt : 0;
     }
 }

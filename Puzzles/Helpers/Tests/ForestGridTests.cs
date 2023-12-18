@@ -268,7 +268,7 @@ public class GridCompassTests
         var gridArray = PuzzleInput.InputStringToArray("00000\r\n00000\r\n01234\r\n56789");
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
-        Assert.That(_gridCompass.AllItemsNorth(x, 0), Is.Empty);
+        Assert.That(_gridCompass.AllIntegersNorth(x, 0), Is.Empty);
     }
 
     [Test]
@@ -278,7 +278,7 @@ public class GridCompassTests
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { x }, _gridCompass.AllItemsNorth(x, 1));
+        CollectionAssert.AreEqual(new[] { x }, _gridCompass.AllIntegersNorth(x, 1));
     }
 
     [Test]
@@ -289,7 +289,7 @@ public class GridCompassTests
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllItemsNorth(x, 2));
+        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllIntegersNorth(x, 2));
     }
 
     [Test]
@@ -299,7 +299,7 @@ public class GridCompassTests
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
 
-        Assert.That(_gridCompass.AllItemsSouth(x, 4), Is.Empty);
+        Assert.That(_gridCompass.AllIntegersSouth(x, 4), Is.Empty);
     }
 
     [Test]
@@ -310,7 +310,7 @@ public class GridCompassTests
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllItemsSouth(x, 0));
+        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllIntegersSouth(x, 0));
     }
 
 
@@ -322,7 +322,7 @@ public class GridCompassTests
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
 
-        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllItemsSouth(x, 0));
+        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree+1 }, _gridCompass.AllIntegersSouth(x, 0));
     }
 
     [Test]
@@ -332,7 +332,7 @@ public class GridCompassTests
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
 
-        Assert.That(_gridCompass.AllItemsWest(0, y), Is.Empty);
+        Assert.That(_gridCompass.AllIntegersWest(0, y), Is.Empty);
     }
 
     [Test]
@@ -343,7 +343,7 @@ public class GridCompassTests
         _gridCompass = new GridCompass(forestGrid);
 
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllItemsWest(1, y));
+        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllIntegersWest(1, y));
     }
     [Test]
     public void Should_find_2_tree_west_of_column_2([Values(0, 1, 2, 3, 4)] int y)
@@ -353,7 +353,7 @@ public class GridCompassTests
         _gridCompass = new GridCompass(forestGrid);
 
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree }, _gridCompass.AllItemsWest(2, y));
+        CollectionAssert.AreEqual(new[] { expectedTree, expectedTree }, _gridCompass.AllIntegersWest(2, y));
     }
 
     [Test]
@@ -364,10 +364,10 @@ public class GridCompassTests
         _gridCompass = new GridCompass(forestGrid);
         Assert.Multiple(() =>
         {
-            CollectionAssert.AreEqual(new[] { 0, 3 }, _gridCompass.AllItemsWest(2, 0));
-            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.AllItemsNorth(2, 2));
-            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.AllItemsSouth(2, 2));
-            CollectionAssert.AreEqual(new[] { 3, 2 }, _gridCompass.AllItemsEast(2, 2));
+            CollectionAssert.AreEqual(new[] { 0, 3 }, _gridCompass.AllIntegersWest(2, 0));
+            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.AllIntegersNorth(2, 2));
+            CollectionAssert.AreEqual(new[] { 5, 3 }, _gridCompass.AllIntegersSouth(2, 2));
+            CollectionAssert.AreEqual(new[] { 3, 2 }, _gridCompass.AllIntegersEast(2, 2));
         });
     }
 
@@ -379,7 +379,7 @@ public class GridCompassTests
         var forestGrid = new PuzzleGrid(gridArray);
         _gridCompass = new GridCompass(forestGrid);
 
-        Assert.That(_gridCompass.AllItemsEast(4, y), Is.Empty);
+        Assert.That(_gridCompass.AllIntegersEast(4, y), Is.Empty);
     }
 
     [Test]
@@ -406,7 +406,7 @@ public class GridCompassTests
         _gridCompass = new GridCompass(forestGrid);
         
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllItemsEast(3, y));
+        CollectionAssert.AreEqual(new[] { expectedTree }, _gridCompass.AllIntegersEast(3, y));
     }
     
     [Test]
@@ -417,7 +417,7 @@ public class GridCompassTests
         _gridCompass = new GridCompass(forestGrid);
         
         var expectedTree = y;
-        CollectionAssert.AreEqual(new[] { expectedTree,expectedTree }, _gridCompass.AllItemsEast(2, y));
+        CollectionAssert.AreEqual(new[] { expectedTree,expectedTree }, _gridCompass.AllIntegersEast(2, y));
     }
 
     [Test]
