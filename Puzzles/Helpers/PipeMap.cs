@@ -1,4 +1,4 @@
-﻿namespace TestProject1.Helpers.Tests;
+﻿namespace TestProject1.Helpers;
 
 public class PipeMap
 {
@@ -27,8 +27,8 @@ public class PipeMap
             return 0;
         }
     }
-    
-    public int Distance(Tuple<int, int> start)
+
+    private int Distance(Tuple<int, int> start)
     {
         //Straights
         if (_gridCompass.WestNeighbor(start.Item1, start.Item2) == "-") return 1;
@@ -103,7 +103,8 @@ public class PipeMap
 
     public string Route()
     {
-        var location = _grid.StartLocation();
+        var startLocation = _grid.StartLocation();
+        var location = startLocation;
         var orientation = ValidExits(location).First();
         var journey = "S";
         while (true)
@@ -111,8 +112,16 @@ public class PipeMap
             var locationTuple = Next(location,orientation);
             var pipe = _gridCompass.GetItem(locationTuple.Item1,locationTuple.Item2) ?? ".";
             if (pipe == "S") break;
-            
             location = new Tuple<int, int>(locationTuple.Item1, locationTuple.Item2);
+            
+            var xDistance = location.Item1 - startLocation.Item1;
+            if(xDistance<0) xDistance *=-1;
+            if (xDistance > MaxX) MaxX = xDistance;
+            
+            var yDistance = startLocation.Item2 - location.Item2;
+            if(yDistance<0) yDistance *=-1;
+            if (yDistance > MaxY) MaxY = yDistance;
+            
             orientation = locationTuple.Item3;
             journey += pipe;
         }
@@ -157,4 +166,15 @@ public class PipeMap
 
         return new Tuple<int, int, GridDirections>(nextX, nextY, exitOrientation);
     }
+
+    public int FarthestPoint()
+    {
+        Route();
+        var flattenedYDistance = MaxY; //(MaxY%2 == 0) ? MaxY : MaxY *2;
+        return MaxX + flattenedYDistance;
+    }
+
+    public int MaxY { get; private set; }
+
+    public int MaxX { get; private set; }
 }

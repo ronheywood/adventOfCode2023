@@ -10,6 +10,12 @@ public class PipeMapShould
 .L-J.
 .....";
 
+    private const string ComplicatedLoopMap = @"..F7.
+.FJ|.
+SJ.L7
+|F--J
+LJ...";
+
     [Test]
     public void distance_is_zero_when_no_start_location()
     {
@@ -29,7 +35,7 @@ public class PipeMapShould
     {
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(0));
     }
-    
+
     [TestCaseSource(nameof(IncompatiblePipes))]
     public void distance_is_zero_when_start_location_is_not_connected_to_a_compatible_pipe(string map)
     {
@@ -58,19 +64,41 @@ public class PipeMapShould
         yield return new object[] { @"S|" };
         yield return new object[] { @"SL" };
         yield return new object[] { @"JS" };
-        yield return new object[] { @"J
-S" };
-        yield return new object[] { @"L
-S" };
-        yield return new object[] { @"J
-S" };
-        yield return new object[] { @"S
-F" };
-        yield return new object[] { @"S
-7" };
-        yield return new object[] { @"S
--" };   yield return new object[] { @"-
-S" };
+        yield return new object[]
+        {
+            @"J
+S"
+        };
+        yield return new object[]
+        {
+            @"L
+S"
+        };
+        yield return new object[]
+        {
+            @"J
+S"
+        };
+        yield return new object[]
+        {
+            @"S
+F"
+        };
+        yield return new object[]
+        {
+            @"S
+7"
+        };
+        yield return new object[]
+        {
+            @"S
+-"
+        };
+        yield return new object[]
+        {
+            @"-
+S"
+        };
     }
 
     private static IEnumerable<object[]> DisConnectedStartPipes()
@@ -95,7 +123,7 @@ S" };
     {
         var map = "S-";
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
-        
+
         map = "-S";
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
@@ -106,8 +134,8 @@ S" };
         var map = @"|
 S";
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
-        
-         map = @"S
+
+        map = @"S
 |";
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
@@ -134,14 +162,14 @@ J";
         var map = @"S7";
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
-    
+
     [Test]
     public void distance_is_one_when_one_connected_bend_pipe_se()
     {
         var map = @"FS";
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
-    
+
     [TestCase("F")]
     [TestCase("7")]
     public void distance_is_one_when_one_connected_bend_pipe_north(string bendType)
@@ -151,15 +179,15 @@ S";
         Assert.That(new PipeMap(PuzzleInput.InputStringToArray(map)).Distance(), Is.EqualTo(1));
     }
 
-    [TestCase("-","-")]
-    [TestCase("F","7")]
-    [TestCase("F","-")]
-    [TestCase("L","J")]
+    [TestCase("-", "-")]
+    [TestCase("F", "7")]
+    [TestCase("F", "-")]
+    [TestCase("L", "J")]
     public void Identifies_valid_compass_orientations_horizontal_from_start(string west, string east)
     {
         var map = @$"{west}S{east}";
         var connectedToStart = new PipeMap(PuzzleInput.InputStringToArray(map)).ConnectedToStart().ToArray();
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(connectedToStart, Has.Length.EqualTo(2));
@@ -168,10 +196,10 @@ S";
         });
     }
 
-    [TestCase("|","|")]
-    [TestCase("F","|")]
-    [TestCase("F","J")]
-    [TestCase("7","L")]
+    [TestCase("|", "|")]
+    [TestCase("F", "|")]
+    [TestCase("F", "J")]
+    [TestCase("7", "L")]
     public void Identifies_valid_compass_orientations_vertical_from_start(string north, string south)
     {
         var map = @$".{north}.
@@ -185,97 +213,99 @@ S";
         });
     }
 
-    [TestCase("-S-",GridDirections.West,GridDirections.East)]
-    [TestCase("-S-",GridDirections.East,GridDirections.West)]
+    [TestCase("-S-", GridDirections.West, GridDirections.East)]
+    [TestCase("-S-", GridDirections.East, GridDirections.West)]
     [TestCase(@"|
 S
-|",GridDirections.North,GridDirections.South)][TestCase(@"|
+|", GridDirections.North, GridDirections.South)]
+    [TestCase(@"|
 S
-|",GridDirections.South,GridDirections.North)]
+|", GridDirections.South, GridDirections.North)]
     public void identifies_valid_pipe_exit_from_entrance(string mapString, GridDirections entrance, GridDirections exit)
     {
-        
         var map = new PipeMap(PuzzleInput.InputStringToArray(mapString));
         var start = map.StartLocation();
         Assert.That(map.Exit(start, entrance), Is.EqualTo(exit));
     }
 
-    [TestCase("-",GridDirections.East,GridDirections.East)]
-    [TestCase("-",GridDirections.West,GridDirections.West)]
-    [TestCase("|",GridDirections.North,GridDirections.North)]
-    [TestCase("|",GridDirections.South,GridDirections.South)]
-    [TestCase("L",GridDirections.South,GridDirections.East)]
-    [TestCase("L",GridDirections.West,GridDirections.North)]
-    [TestCase("J",GridDirections.South,GridDirections.West)]
-    [TestCase("J",GridDirections.East,GridDirections.North)]
-    [TestCase("7",GridDirections.East,GridDirections.South)]
-    [TestCase("7",GridDirections.North,GridDirections.West)]
-    [TestCase("F",GridDirections.North,GridDirections.East)]
-    [TestCase("F",GridDirections.West,GridDirections.South)]
-    public void identifies_new_orientation_from_pipe_entrance(string pipeString, GridDirections entranceOrientation, GridDirections expectedOrientaion)
+    [TestCase("-", GridDirections.East, GridDirections.East)]
+    [TestCase("-", GridDirections.West, GridDirections.West)]
+    [TestCase("|", GridDirections.North, GridDirections.North)]
+    [TestCase("|", GridDirections.South, GridDirections.South)]
+    [TestCase("L", GridDirections.South, GridDirections.East)]
+    [TestCase("L", GridDirections.West, GridDirections.North)]
+    [TestCase("J", GridDirections.South, GridDirections.West)]
+    [TestCase("J", GridDirections.East, GridDirections.North)]
+    [TestCase("7", GridDirections.East, GridDirections.South)]
+    [TestCase("7", GridDirections.North, GridDirections.West)]
+    [TestCase("F", GridDirections.North, GridDirections.East)]
+    [TestCase("F", GridDirections.West, GridDirections.South)]
+    public void identifies_new_orientation_from_pipe_entrance(string pipeString, GridDirections entranceOrientation,
+        GridDirections expectedOrientaion)
     {
         var orientation = PipeMap.Orientation(pipeString, entranceOrientation);
-        Assert.That(orientation,Is.EqualTo(expectedOrientaion));
+        Assert.That(orientation, Is.EqualTo(expectedOrientaion));
     }
 
     [Test]
     public void invalid_orientation_error_message()
     {
-        var ex = Assert.Throws<Exception>(() => PipeMap.Orientation("-",GridDirections.North));
+        var ex = Assert.Throws<Exception>(() => PipeMap.Orientation("-", GridDirections.North));
         var expectedMessage = "Failed to get new orientation from input -, North";
-        Assert.That(ex?.Message,Is.EqualTo(expectedMessage));
+        Assert.That(ex?.Message, Is.EqualTo(expectedMessage));
     }
 
     [TestCaseSource(nameof(PipeRoute))]
-    public void Get_next_location_from_a_pipe_and_an_orientation(Tuple<int, int> start, GridDirections orientation, Tuple<int, int,GridDirections> expected)
+    public void Get_next_location_from_a_pipe_and_an_orientation(Tuple<int, int> start, GridDirections orientation,
+        Tuple<int, int, GridDirections> expected)
     {
         var pipeMap = new PipeMap(PuzzleInput.InputStringToArray(SimpleLoopMap));
-        Assert.That(pipeMap.Next(start,orientation),Is.EqualTo(expected));
+        Assert.That(pipeMap.Next(start, orientation), Is.EqualTo(expected));
     }
 
     private static IEnumerable<object[]> PipeRoute()
     {
         yield return new object[]
         {
-            new Tuple<int, int>(1, 1), 
+            new Tuple<int, int>(1, 1),
             GridDirections.East,
             new Tuple<int, int, GridDirections>(2, 1, GridDirections.East)
         };
-        
+
         yield return new object[]
         {
-            new Tuple<int, int>(2, 1), 
+            new Tuple<int, int>(2, 1),
             GridDirections.East,
             new Tuple<int, int, GridDirections>(3, 1, GridDirections.East)
         };
-        
+
         yield return new object[]
         {
-            new Tuple<int, int>(3, 1), 
+            new Tuple<int, int>(3, 1),
             GridDirections.East,
             new Tuple<int, int, GridDirections>(3, 2, GridDirections.South)
         };
         yield return new object[]
         {
-            new Tuple<int, int>(3, 2), 
+            new Tuple<int, int>(3, 2),
             GridDirections.South,
             new Tuple<int, int, GridDirections>(3, 3, GridDirections.South)
         };
         yield return new object[]
         {
-            new Tuple<int, int>(3, 3), 
+            new Tuple<int, int>(3, 3),
             GridDirections.South,
             new Tuple<int, int, GridDirections>(2, 3, GridDirections.West)
         };
         yield return new object[]
         {
-            new Tuple<int, int>(2, 3), 
+            new Tuple<int, int>(2, 3),
             GridDirections.West,
             new Tuple<int, int, GridDirections>(1, 3, GridDirections.West)
         };
         yield return new object[]
         {
-            new Tuple<int, int>(1, 3), 
+            new Tuple<int, int>(1, 3),
             GridDirections.West,
             new Tuple<int, int, GridDirections>(1, 2, GridDirections.North)
         };
@@ -287,13 +317,13 @@ S
         };
     }
 
-        [Test]
+    [Test]
     public void Follow_a_loop_to_start()
     {
         var map = new PipeMap(PuzzleInput.InputStringToArray(SimpleLoopMap));
         Assert.That(map.Route(), Is.EqualTo("S-7|J-L|"));
     }
-    
+
     [Test]
     public void Follow_a_loop_in_example_puzzle()
     {
@@ -301,52 +331,112 @@ S
         var map = new PipeMap(exampleMap);
         Assert.That(map.Route(), Does.StartWith("S-J7LF---JF--7J-F")); //... 13780 chars
     }
-}
 
-public class PipePuzzleGrid : PuzzleGrid
-{
-    public PipePuzzleGrid(IEnumerable<string> map) : base(map)
+    [Test]
+    public void Should_calculate_max_distance_x_when_travelling_EAST()
     {
+        var mapString = @"S---7
+L---J";
+        var map = new PipeMap(PuzzleInput.InputStringToArray(mapString));
+        map.Route();
+        Assert.That(map.MaxX, Is.EqualTo(4));
     }
 
-    public Tuple<int, int> StartLocation()
+    [Test]
+    public void Should_calculate_max_distance_x_when_travelling_WEST()
     {
-        for (var x = 0; x < GridWidth; x++)
-        {
-            for (var y = 0; y < GridHeight; y++)
-            {
-                if (GridCompass.GetItem(x, y) == "S") return new Tuple<int, int>(x, y);
-            }
-        }
-
-        throw new Exception("StartLocation not found");
+        var mapString = @"F---7
+S---J";
+        var map = new PipeMap(PuzzleInput.InputStringToArray(mapString));
+        map.Route();
+        Assert.That(map.MaxX, Is.EqualTo(4));
     }
 
-    public string DistancePlot()
+    [Test]
+    public void Should_calculate_max_distance_y_when_travelling_south()
     {
-        var response = string.Empty;
-        var column = 0;
-        var startFound = false;
-        foreach (var item in Items)
-        {
-            if (item == "S") startFound = true;
-            var itemString = ".";
-            if (startFound)
-            {
-                itemString = (item == "S") ? "0" : item;                
-            }
-            response += itemString;
-            if (column == GridWidth-1)
-            {
-                response += "\r\n";
-                column = 0;    
-            }
-            else
-            {
-                column++;
-            }
-        }
+        var verticalMap = @"S7
+||
+||
+LJ";
+        var map = new PipeMap(PuzzleInput.InputStringToArray(verticalMap));
+        map.Route();
+        Assert.That(map.MaxY, Is.EqualTo(3));
+        Assert.That(map.FarthestPoint(), Is.EqualTo(4),"4 steps to farthest point");
+    }
 
-        return response;
+    [Test]
+    public void Should_calculate_max_distance_y_when_travelling_north()
+    {
+        var verticalMap = @"F7
+||
+||
+SJ";
+        var map = new PipeMap(PuzzleInput.InputStringToArray(verticalMap));
+        map.Route();
+        Assert.That(map.MaxY, Is.EqualTo(3));
+        Assert.That(map.MaxX, Is.EqualTo(1));
+        Assert.That(map.FarthestPoint(), Is.EqualTo(4));
+    }
+
+    [Test]
+    public void max_distance_on_the_y_axis_when_traveling_north_from_start()
+    {
+        var map = new PipeMap(PuzzleInput.InputStringToArray(ComplicatedLoopMap));
+        map.Route();
+        Assert.That(map.MaxX, Is.EqualTo(4));
+        Assert.That(map.MaxY, Is.EqualTo(2));
+        //Assert.That(map.FarthestPoint(), Is.EqualTo(8));
+    }
+
+    [Test]
+    public void Should_sum_the_max_distance_on_the_x_axis_and_max_distance_on_the_y_axis_to_get_the_farthest_point()
+    {
+        var map = new PipeMap(PuzzleInput.InputStringToArray(SimpleLoopMap));
+        map.Route();
+        Assert.That(map.MaxX, Is.EqualTo(2));
+        Assert.That(map.MaxY, Is.EqualTo(2));
+        Assert.That(map.FarthestPoint(), Is.EqualTo(4));
+    }
+
+    [Test]
+    [Ignore("If we go up 1 need to go down 1 again to get back to start x")]
+    public void sum_max_distance_by_stretching_the_y_axis_flat()
+    {
+        var map = new PipeMap(PuzzleInput.InputStringToArray(ComplicatedLoopMap));
+        map.Route();
+        Assert.That(map.MaxY, Is.EqualTo(2));
+        Assert.That(map.MaxX, Is.EqualTo(4));
+        Assert.That(map.FarthestPoint(), Is.EqualTo(8));
+    }
+
+    [Test]
+    [Ignore("when end point is on x ")]
+    public void sum_max_distance_by_stretching_the_y_axis_flat_when_odd_number_on_y()
+    {
+        var maxXOnSameAxis = @".F-7
+SJ.|
+L--J";
+        
+        var map = new PipeMap(PuzzleInput.InputStringToArray(maxXOnSameAxis));
+        map.Route();
+        
+        Assert.That(map.MaxY, Is.EqualTo(1), "Max Y should be 1");
+        Assert.That(map.MaxX, Is.EqualTo(3));
+        Assert.That(map.FarthestPoint(), Is.EqualTo(5));
+    }
+    
+    [Test]
+    public void sum_max_distance_by_stretching_the_y_axis_flat_when_Y_descends()
+    {
+        var maxXOnUpperAxis = @"....
+S--7
+L-7|
+..LJ";        
+        var map = new PipeMap(PuzzleInput.InputStringToArray(maxXOnUpperAxis));
+        map.Route();
+        Assert.That(map.MaxY, Is.EqualTo(2));
+        Assert.That(map.MaxX, Is.EqualTo(3));
+        Assert.That(map.FarthestPoint(), Is.EqualTo(5));
     }
 }
